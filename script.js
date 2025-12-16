@@ -1,549 +1,307 @@
-// ===================================
-// Mock Data
-// ===================================
-
-const mockPolicies = [
-    {
-        id: 'POL-2024-001',
-        holder: 'John Anderson',
-        type: 'Commercial Property',
-        status: 'pending',
-        issues: 5,
-        lastUpdated: '2025-12-08',
-        coverage: '$2,500,000',
-        reviewDate: 'December 10, 2025'
-    },
-    {
-        id: 'POL-2024-002',
-        holder: 'Sarah Mitchell',
-        type: 'General Liability',
-        status: 'review',
-        issues: 3,
-        lastUpdated: '2025-12-09',
-        coverage: '$1,000,000',
-        reviewDate: 'December 9, 2025'
-    },
-    {
-        id: 'POL-2024-003',
-        holder: 'Tech Solutions Inc.',
-        type: 'Professional Liability',
-        status: 'completed',
-        issues: 0,
-        lastUpdated: '2025-12-07',
-        coverage: '$5,000,000',
-        reviewDate: 'December 7, 2025'
-    },
-    {
-        id: 'POL-2024-004',
-        holder: 'Green Valley Farms',
-        type: 'Agricultural Insurance',
-        status: 'pending',
-        issues: 7,
-        lastUpdated: '2025-12-10',
-        coverage: '$3,200,000',
-        reviewDate: 'December 10, 2025'
-    },
-    {
-        id: 'POL-2024-005',
-        holder: 'Metro Construction',
-        type: 'Workers Compensation',
-        status: 'review',
-        issues: 2,
-        lastUpdated: '2025-12-09',
-        coverage: '$2,000,000',
-        reviewDate: 'December 9, 2025'
-    }
-];
-
-const mockDiscrepancies = [
-    {
-        field: 'Coverage Amount',
-        expected: '$2,500,000',
-        actual: '$2,450,000',
-        severity: 'high',
-        description: 'Coverage amount in policy document does not match the declared value in the application form.'
-    },
-    {
-        field: 'Property Address',
-        expected: '123 Main Street, Suite 400',
-        actual: '123 Main St, Ste 400',
-        severity: 'low',
-        description: 'Address format inconsistency between documents. Standardization required.'
-    },
-    {
-        field: 'Deductible Amount',
-        expected: '$10,000',
-        actual: '$15,000',
-        severity: 'high',
-        description: 'Deductible amount mismatch requires immediate correction and policyholder notification.'
-    },
-    {
-        field: 'Policy Effective Date',
-        expected: '2025-01-01',
-        actual: '2025-01-15',
-        severity: 'medium',
-        description: 'Effective date discrepancy may affect coverage period calculations.'
-    },
-    {
-        field: 'Named Insured',
-        expected: 'John Anderson DBA Anderson Enterprises',
-        actual: 'John Anderson',
-        severity: 'medium',
-        description: 'Business entity designation missing from named insured field.'
-    }
-];
-
-const mockCoverageItems = [
-    {
-        type: 'Building Coverage',
-        limit: '$2,000,000',
-        status: 'active',
-        notes: 'Replacement cost basis with agreed value endorsement'
-    },
-    {
-        type: 'Business Personal Property',
-        limit: '$500,000',
-        status: 'active',
-        notes: 'Includes equipment, inventory, and fixtures'
-    },
-    {
-        type: 'Business Interruption',
-        limit: '$750,000',
-        status: 'active',
-        notes: '12-month indemnity period with extended period endorsement'
-    },
-    {
-        type: 'Equipment Breakdown',
-        limit: '$250,000',
-        status: 'active',
-        notes: 'Covers mechanical and electrical equipment failures'
-    }
-];
-
-const mockEndorsements = [
-    {
-        code: 'CP-10-30',
-        name: 'Causes of Loss - Special Form',
-        status: 'active',
-        effectiveDate: '2025-01-01'
-    },
-    {
-        code: 'CP-04-18',
-        name: 'Additional Insured - Owners, Lessees',
-        status: 'active',
-        effectiveDate: '2025-01-01'
-    },
-    {
-        code: 'CP-15-10',
-        name: 'Ordinance or Law Coverage',
-        status: 'active',
-        effectiveDate: '2025-01-01'
-    }
-];
-
-const mockRiskItems = [
-    {
-        category: 'Property Risk',
-        level: 'medium',
-        description: 'Building age (25 years) requires enhanced maintenance protocols',
-        recommendation: 'Annual building inspection recommended'
-    },
-    {
-        category: 'Location Risk',
-        level: 'low',
-        description: 'Property located in low flood zone area',
-        recommendation: 'Flood insurance optional but recommended'
-    },
-    {
-        category: 'Occupancy Risk',
-        level: 'medium',
-        description: 'Mixed-use occupancy requires specific coverage considerations',
-        recommendation: 'Review tenant operations quarterly'
-    }
-];
-
-// ===================================
-// Initialization
-// ===================================
-
-document.addEventListener('DOMContentLoaded', function() {
-    // Initialize Lucide icons
-    lucide.createIcons();
-    
-    // Load initial data
-    loadPoliciesTable();
-    loadComparisonData();
-    
-    // Setup navigation
-    setupNavigation();
-    
-    // Setup event listeners
-    setupEventListeners();
-});
-
-// ===================================
-// Navigation
-// ===================================
-
-function setupNavigation() {
-    const navButtons = document.querySelectorAll('.nav-btn');
-    
-    navButtons.forEach(button => {
-        button.addEventListener('click', function() {
-            const viewName = this.getAttribute('data-view');
-            showView(viewName);
-            
-            // Update active state
-            navButtons.forEach(btn => btn.classList.remove('active'));
-            this.classList.add('active');
-        });
-    });
-}
-
-function showView(viewName) {
-    const views = document.querySelectorAll('.view');
-    views.forEach(view => view.classList.remove('active'));
-    
-    const targetView = document.getElementById(`${viewName}-view`);
-    if (targetView) {
-        targetView.classList.add('active');
-    }
-    
-    // Reinitialize icons after view change
-    setTimeout(() => lucide.createIcons(), 100);
-}
-
-// ===================================
-// Dashboard Functions
-// ===================================
-
-function loadPoliciesTable() {
-    const tbody = document.getElementById('policies-table-body');
-    if (!tbody) return;
-    
-    tbody.innerHTML = mockPolicies.map(policy => `
-        <tr>
-            <td><strong>${policy.id}</strong></td>
-            <td>${policy.holder}</td>
-            <td>${policy.type}</td>
-            <td>
-                <span class="status-badge status-${policy.status}">
-                    ${policy.status.charAt(0).toUpperCase() + policy.status.slice(1)}
-                </span>
-            </td>
-            <td>
-                ${policy.issues > 0 
-                    ? `<span class="badge badge-warning">${policy.issues} issues</span>`
-                    : `<span class="badge badge-success">No issues</span>`
-                }
-            </td>
-            <td>${formatDate(policy.lastUpdated)}</td>
-            <td>
-                <button class="btn-secondary" onclick="viewPolicy('${policy.id}')">
-                    <i data-lucide="eye"></i>
-                    Review
-                </button>
-            </td>
-        </tr>
-    `).join('');
-    
-    lucide.createIcons();
-}
-
-function viewPolicy(policyId) {
-    const policy = mockPolicies.find(p => p.id === policyId);
-    if (!policy) return;
-    
-    // Update comparison view with policy data
-    document.getElementById('selected-policy-id').textContent = policy.id;
-    document.getElementById('policy-holder').textContent = policy.holder;
-    document.getElementById('policy-type').textContent = policy.type;
-    document.getElementById('coverage-amount').textContent = policy.coverage;
-    document.getElementById('review-date').textContent = policy.reviewDate;
-    
-    // Show comparison view
-    showView('comparison');
-    
-    // Update nav button active state
-    document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
-    document.querySelector('[data-view="comparison"]').classList.add('active');
-}
-
-// ===================================
-// Comparison Functions
-// ===================================
-
-function loadComparisonData() {
-    loadDiscrepancies();
-    loadCoverageItems();
-    loadEndorsements();
-    loadRiskItems();
-}
-
-function loadDiscrepancies() {
-    const container = document.getElementById('discrepancy-list');
-    if (!container) return;
-    
-    document.getElementById('discrepancy-count').textContent = `${mockDiscrepancies.length} Issues`;
-    
-    container.innerHTML = mockDiscrepancies.map(item => `
-        <div class="discrepancy-item">
-            <div class="item-header">
-                <span class="item-title">${item.field}</span>
-                <span class="badge badge-${getSeverityBadge(item.severity)}">${item.severity.toUpperCase()}</span>
-            </div>
-            <div class="item-description">${item.description}</div>
-            <div class="item-meta">
-                <span><strong>Expected:</strong> ${item.expected}</span>
-                <span><strong>Actual:</strong> ${item.actual}</span>
-            </div>
-        </div>
-    `).join('');
-}
-
-function loadCoverageItems() {
-    const container = document.getElementById('coverage-items');
-    if (!container) return;
-    
-    container.innerHTML = mockCoverageItems.map(item => `
-        <div class="coverage-item">
-            <div class="item-header">
-                <span class="item-title">${item.type}</span>
-                <span class="badge badge-success">${item.limit}</span>
-            </div>
-            <div class="item-description">${item.notes}</div>
-        </div>
-    `).join('');
-}
-
-function loadEndorsements() {
-    const container = document.getElementById('endorsement-list');
-    if (!container) return;
-    
-    document.getElementById('endorsement-count').textContent = `${mockEndorsements.length} Active`;
-    
-    container.innerHTML = mockEndorsements.map(item => `
-        <div class="endorsement-item">
-            <div class="item-header">
-                <span class="item-title">${item.code}</span>
-                <span class="badge badge-success">${item.status.toUpperCase()}</span>
-            </div>
-            <div class="item-description">${item.name}</div>
-            <div class="item-meta">
-                <span><strong>Effective:</strong> ${formatDate(item.effectiveDate)}</span>
-            </div>
-        </div>
-    `).join('');
-}
-
-function loadRiskItems() {
-    const container = document.getElementById('risk-items');
-    if (!container) return;
-    
-    container.innerHTML = mockRiskItems.map(item => `
-        <div class="risk-item">
-            <div class="item-header">
-                <span class="item-title">${item.category}</span>
-                <span class="badge badge-${getRiskBadge(item.level)}">${item.level.toUpperCase()}</span>
-            </div>
-            <div class="item-description">${item.description}</div>
-            <div class="item-meta">
-                <span><strong>Recommendation:</strong> ${item.recommendation}</span>
-            </div>
-        </div>
-    `).join('');
-}
-
-// ===================================
-// Letter Generation
-// ===================================
-
-function generateLetter() {
-    const letterType = document.getElementById('letter-type').value;
-    const letterTone = document.getElementById('letter-tone').value;
-    const letterContent = document.getElementById('letter-content');
-    
-    // Show loading
-    showLoading();
-    
-    // Simulate processing delay
-    setTimeout(() => {
-        const letter = createLetter(letterType, letterTone);
-        letterContent.innerHTML = letter;
-        hideLoading();
-        lucide.createIcons();
-    }, 1500);
-}
-
-function createLetter(type, tone) {
-    const today = new Date().toLocaleDateString('en-US', { 
-        year: 'numeric', 
-        month: 'long', 
-        day: 'numeric' 
-    });
-    
-    const greeting = tone === 'formal' ? 'Dear' : tone === 'friendly' ? 'Hello' : 'Dear';
-    
-    return `
-        <div class="letter-date">${today}</div>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document Comparison Tool - Advanced</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+</head>
+<body>
+    <div class="app-container">
         
-        <div class="letter-recipient">
-            <p><strong>John Anderson</strong></p>
-            <p>Anderson Enterprises</p>
-            <p>123 Main Street, Suite 400</p>
-            <p>Springfield, IL 62701</p>
-        </div>
-        
-        <div class="letter-subject">
-            <strong>RE: Policy Review Notice - Policy Number POL-2024-001</strong>
-        </div>
-        
-        <div class="letter-body">
-            <p>${greeting} Mr. Anderson,</p>
-            
-            <p>We have completed our comprehensive review of your Commercial Property Insurance policy (Policy Number: POL-2024-001). This letter outlines the findings from our analysis and the required actions to ensure your policy documentation is accurate and complete.</p>
-            
-            <div class="letter-section">
-                <h4>Review Summary</h4>
-                <p>Our automated policy review system has identified several discrepancies between your policy documents and the information in our records. These items require your attention to ensure proper coverage and compliance with underwriting standards.</p>
+        <!-- Header -->
+        <header class="app-header">
+            <div class="header-inner">
+                <div class="brand">
+                    <i data-lucide="file-diff" class="brand-icon"></i>
+                    <h1 class="brand-title">Document Comparison</h1>
+                </div>
+                <p class="brand-subtitle">Insurance Policy Document Analysis & Reporting Tool</p>
             </div>
-            
-            <div class="letter-section">
-                <h4>Identified Discrepancies</h4>
-                <p>The following discrepancies were found during our review:</p>
-                <ul class="letter-list">
-                    ${mockDiscrepancies.map(d => `
-                        <li><strong>${d.field}:</strong> ${d.description} (Severity: ${d.severity.toUpperCase()})</li>
-                    `).join('')}
-                </ul>
-            </div>
-            
-            <div class="letter-section">
-                <h4>Required Actions</h4>
-                <p>To resolve these discrepancies, please take the following actions within 15 business days:</p>
-                <ul class="letter-list">
-                    <li>Review the attached detailed comparison report</li>
-                    <li>Verify the correct information for each identified discrepancy</li>
-                    <li>Complete and return the enclosed Policy Amendment Form</li>
-                    <li>Provide supporting documentation for any changes requested</li>
-                    <li>Contact our office if you have questions or need clarification</li>
-                </ul>
-            </div>
-            
-            <div class="letter-section">
-                <h4>Coverage Impact</h4>
-                <p>Please note that the identified discrepancies, particularly those marked as HIGH severity, may affect your coverage. We recommend addressing these items promptly to ensure there are no gaps in your protection.</p>
-            </div>
-            
-            <div class="letter-section">
-                <h4>Next Steps</h4>
-                <p>Our underwriting team is available to assist you with this review process. Please contact us at (555) 123-4567 or email us at underwriting@insurance.com to schedule a consultation or if you have any questions.</p>
-            </div>
-            
-            <p>We appreciate your prompt attention to this matter and look forward to continuing to serve your insurance needs.</p>
-        </div>
-        
-        <div class="letter-signature">
-            <p><strong>Sincerely,</strong></p>
-            <p style="margin-top: 2rem;"><strong>Policy Review Department</strong></p>
-            <p>Insurance Services Division</p>
-            <p>Phone: (555) 123-4567</p>
-            <p>Email: underwriting@insurance.com</p>
-        </div>
-    `;
-}
+        </header>
 
-// ===================================
-// Event Listeners
-// ===================================
-
-function setupEventListeners() {
-    // Letter type change
-    const letterType = document.getElementById('letter-type');
-    if (letterType) {
-        letterType.addEventListener('change', function() {
-            // Clear current letter when type changes
-            const letterContent = document.getElementById('letter-content');
-            if (letterContent && !letterContent.querySelector('.letter-placeholder')) {
-                letterContent.innerHTML = `
-                    <div class="letter-placeholder">
-                        <i data-lucide="file-text"></i>
-                        <p>Click "Generate Letter" to create a review letter based on the policy analysis</p>
+        <!-- Main Content -->
+        <main class="app-main">
+            
+            <!-- Upload Section -->
+            <section class="upload-section">
+                <div class="section-title">
+                    <i data-lucide="upload-cloud"></i>
+                    <h2>Upload Documents</h2>
+                </div>
+                
+                <div class="upload-container">
+                    <div class="upload-card">
+                        <div class="upload-card-header">
+                            <span class="upload-number">01</span>
+                            <h3>First Package</h3>
+                        </div>
+                        <div class="upload-area">
+                            <input type="file" id="file1" accept=".json" class="file-input">
+                            <label for="file1" class="file-label">
+                                <i data-lucide="file-json-2"></i>
+                                <span class="file-label-text">Choose JSON File</span>
+                                <span class="file-label-hint">or drag and drop</span>
+                            </label>
+                        </div>
+                        <div id="file1-info" class="file-info"></div>
                     </div>
-                `;
-                lucide.createIcons();
-            }
-        });
-    }
-}
 
-// ===================================
-// Utility Functions
-// ===================================
+                    <div class="upload-card">
+                        <div class="upload-card-header">
+                            <span class="upload-number">02</span>
+                            <h3>Second Package</h3>
+                        </div>
+                        <div class="upload-area">
+                            <input type="file" id="file2" accept=".json" class="file-input">
+                            <label for="file2" class="file-label">
+                                <i data-lucide="file-json-2"></i>
+                                <span class="file-label-text">Choose JSON File</span>
+                                <span class="file-label-hint">or drag and drop</span>
+                            </label>
+                        </div>
+                        <div id="file2-info" class="file-info"></div>
+                    </div>
+                </div>
+            </section>
 
-function formatDate(dateString) {
-    const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', { 
-        year: 'numeric', 
-        month: 'short', 
-        day: 'numeric' 
-    });
-}
+            <!-- Document Selection -->
+            <section id="selection-section" class="selection-section" style="display: none;">
+                <div class="section-title">
+                    <i data-lucide="file-search"></i>
+                    <h2>Select Documents to Compare</h2>
+                </div>
+                
+                <div class="selection-container">
+                    <div class="select-group">
+                        <label class="select-label">
+                            <span class="select-label-text">Document from Package 1</span>
+                            <select id="doc1-select" class="select-input">
+                                <option value="">-- Select Document --</option>
+                            </select>
+                        </label>
+                    </div>
 
-function getSeverityBadge(severity) {
-    const badges = {
-        'high': 'danger',
-        'medium': 'warning',
-        'low': 'info'
-    };
-    return badges[severity] || 'info';
-}
+                    <div class="select-divider">
+                        <i data-lucide="arrow-right"></i>
+                    </div>
 
-function getRiskBadge(level) {
-    const badges = {
-        'high': 'danger',
-        'medium': 'warning',
-        'low': 'success'
-    };
-    return badges[level] || 'info';
-}
+                    <div class="select-group">
+                        <label class="select-label">
+                            <span class="select-label-text">Document from Package 2</span>
+                            <select id="doc2-select" class="select-input">
+                                <option value="">-- Select Document --</option>
+                            </select>
+                        </label>
+                    </div>
+                </div>
 
-function showLoading() {
-    const overlay = document.getElementById('loading-overlay');
-    if (overlay) {
-        overlay.classList.add('active');
-    }
-}
+                <button id="compare-btn" class="compare-button" disabled>
+                    <i data-lucide="git-compare"></i>
+                    <span>Compare Documents</span>
+                </button>
+            </section>
 
-function hideLoading() {
-    const overlay = document.getElementById('loading-overlay');
-    if (overlay) {
-        overlay.classList.remove('active');
-    }
-}
+            <!-- Loading Animation with Gradient Progress Bar -->
+            <div id="loading-section" class="loading-section" style="display: none;">
+                <div class="loading-content">
+                    <div class="loading-icon">
+                        <i data-lucide="file-search"></i>
+                    </div>
+                    <h3 class="loading-title">Analyzing Documents</h3>
+                    <p class="loading-text">Comparing fields and detecting differences...</p>
+                    
+                    <!-- Gradient Progress Bar -->
+                    <div class="progress-container">
+                        <div class="progress-bar">
+                            <div class="progress-fill"></div>
+                            <div class="progress-glow"></div>
+                        </div>
+                        <div class="progress-stages">
+                            <span class="stage active">Parsing</span>
+                            <span class="stage">Comparing</span>
+                            <span class="stage">Analyzing</span>
+                            <span class="stage">Complete</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
-// ===================================
-// Export Functions (for demo purposes)
-// ===================================
+            <!-- Dashboard Section -->
+            <section id="dashboard-section" class="dashboard-section" style="display: none;">
+                <div class="section-title">
+                    <i data-lucide="layout-dashboard"></i>
+                    <h2>Discrepancy Dashboard</h2>
+                </div>
 
-function exportReport() {
-    alert('Export functionality would generate a PDF report with all comparison data.');
-}
+                <!-- Stats Cards -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon match">
+                            <i data-lucide="check-circle"></i>
+                        </div>
+                        <div class="stat-content">
+                            <div class="stat-value" id="stat-matches">0</div>
+                            <div class="stat-label">Matches</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon diff">
+                            <i data-lucide="alert-circle"></i>
+                        </div>
+                        <div class="stat-content">
+                            <div class="stat-value" id="stat-diffs">0</div>
+                            <div class="stat-label">Differences</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon missing">
+                            <i data-lucide="x-circle"></i>
+                        </div>
+                        <div class="stat-content">
+                            <div class="stat-value" id="stat-missing">0</div>
+                            <div class="stat-label">Missing</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon total">
+                            <i data-lucide="file-text"></i>
+                        </div>
+                        <div class="stat-content">
+                            <div class="stat-value" id="stat-total">0</div>
+                            <div class="stat-label">Total Fields</div>
+                        </div>
+                    </div>
+                </div>
 
-function copyLetter() {
-    const letterContent = document.getElementById('letter-content');
-    if (letterContent) {
-        const text = letterContent.innerText;
-        navigator.clipboard.writeText(text).then(() => {
-            alert('Letter copied to clipboard!');
-        });
-    }
-}
+                <!-- Charts - Optimized Size -->
+                <div class="charts-container">
+                    <div class="chart-wrapper">
+                        <div class="chart-card">
+                            <h3 class="chart-title">
+                                <i data-lucide="pie-chart"></i>
+                                Comparison Overview
+                            </h3>
+                            <div class="chart-canvas-wrapper">
+                                <canvas id="overview-chart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="chart-wrapper">
+                        <div class="chart-card">
+                            <h3 class="chart-title">
+                                <i data-lucide="bar-chart-3"></i>
+                                Field Distribution
+                            </h3>
+                            <div class="chart-canvas-wrapper">
+                                <canvas id="field-type-chart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
-function downloadLetter() {
-    alert('Download functionality would generate a PDF version of the letter.');
-}
+                <!-- Coverage Analysis -->
+                <div id="coverage-section" class="coverage-section"></div>
 
-function sendLetter() {
-    alert('Send functionality would email the letter to the policyholder.');
-}
+                <!-- Action Buttons -->
+                <div class="action-buttons">
+                    <button id="generate-letter-btn" class="action-btn primary">
+                        <i data-lucide="file-text"></i>
+                        <span>Generate Difference Letter</span>
+                    </button>
+                    <button id="export-data-btn" class="action-btn secondary">
+                        <i data-lucide="download"></i>
+                        <span>Export Comparison Data</span>
+                    </button>
+                </div>
+            </section>
+
+            <!-- Comparison Results - Two Column Layout -->
+            <section id="comparison-section" class="comparison-section" style="display: none;">
+                
+                <div class="results-header">
+                    <div class="results-title">
+                        <i data-lucide="check-circle-2"></i>
+                        <h2>Detailed Comparison</h2>
+                    </div>
+                    <div class="results-legend">
+                        <div class="legend-item">
+                            <span class="legend-dot match"></span>
+                            <span>Match</span>
+                        </div>
+                        <div class="legend-item">
+                            <span class="legend-dot diff"></span>
+                            <span>Different</span>
+                        </div>
+                        <div class="legend-item">
+                            <span class="legend-dot missing"></span>
+                            <span>Missing</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Header Fields - Side by Side -->
+                <div class="comparison-block">
+                    <div class="block-header">
+                        <i data-lucide="file-text"></i>
+                        <h3>Header Fields Comparison</h3>
+                        <span class="edit-hint">Click any value to edit</span>
+                    </div>
+                    <div class="side-by-side-container">
+                        <div class="document-column">
+                            <div class="column-header">Document 1</div>
+                            <div id="header-doc1" class="field-list"></div>
+                        </div>
+                        <div class="document-column">
+                            <div class="column-header">Document 2</div>
+                            <div id="header-doc2" class="field-list"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tabular Fields -->
+                <div id="tables-container"></div>
+
+            </section>
+
+            <!-- Letter Modal -->
+            <div id="letter-modal" class="modal" style="display: none;">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h2>Difference Letter</h2>
+                        <button class="modal-close" onclick="closeLetterModal()">
+                            <i data-lucide="x"></i>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div id="letter-content" class="letter-content"></div>
+                    </div>
+                    <div class="modal-footer">
+                        <button id="download-letter-btn" class="action-btn primary">
+                            <i data-lucide="download"></i>
+                            <span>Download Letter</span>
+                        </button>
+                        <button class="action-btn secondary" onclick="closeLetterModal()">
+                            <span>Close</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+
+        <!-- Footer -->
+        <footer class="app-footer">
+            <p>Document Comparison Tool &copy; 2025 - Advanced Analysis & Reporting</p>
+        </footer>
+
+    </div>
+
+    <script src="script.js"></script>
+    <script>
+        lucide.createIcons();
+    </script>
+</body>
+</html>
