@@ -3,308 +3,305 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="author" content="Helium AI">
-    <meta name="description" content="Policy Review Dashboard - Insurance Policy Comparison and Review System">
-    <title>Policy Review Dashboard - Insurance Review System</title>
+    <title>Document Comparison Tool - Advanced</title>
     <link rel="stylesheet" href="styles.css">
     <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 </head>
 <body>
-    <!-- Header -->
-    <header class="header">
-        <div class="header-content">
-            <div class="logo-section">
-                <i data-lucide="shield-check" class="logo-icon"></i>
-                <h1>Policy Review System</h1>
+    <div class="app-container">
+        
+        <!-- Header -->
+        <header class="app-header">
+            <div class="header-inner">
+                <div class="brand">
+                    <i data-lucide="file-diff" class="brand-icon"></i>
+                    <h1 class="brand-title">Document Comparison</h1>
+                </div>
+                <p class="brand-subtitle">Insurance Policy Document Analysis & Reporting Tool</p>
             </div>
-            <nav class="nav-menu">
-                <button class="nav-btn active" data-view="dashboard">
-                    <i data-lucide="layout-dashboard"></i>
-                    Dashboard
-                </button>
-                <button class="nav-btn" data-view="comparison">
+        </header>
+
+        <!-- Main Content -->
+        <main class="app-main">
+            
+            <!-- Upload Section -->
+            <section class="upload-section">
+                <div class="section-title">
+                    <i data-lucide="upload-cloud"></i>
+                    <h2>Upload Documents</h2>
+                </div>
+                
+                <div class="upload-container">
+                    <div class="upload-card">
+                        <div class="upload-card-header">
+                            <span class="upload-number">01</span>
+                            <h3>First Package</h3>
+                        </div>
+                        <div class="upload-area">
+                            <input type="file" id="file1" accept=".json" class="file-input">
+                            <label for="file1" class="file-label">
+                                <i data-lucide="file-json-2"></i>
+                                <span class="file-label-text">Choose JSON File</span>
+                                <span class="file-label-hint">or drag and drop</span>
+                            </label>
+                        </div>
+                        <div id="file1-info" class="file-info"></div>
+                    </div>
+
+                    <div class="upload-card">
+                        <div class="upload-card-header">
+                            <span class="upload-number">02</span>
+                            <h3>Second Package</h3>
+                        </div>
+                        <div class="upload-area">
+                            <input type="file" id="file2" accept=".json" class="file-input">
+                            <label for="file2" class="file-label">
+                                <i data-lucide="file-json-2"></i>
+                                <span class="file-label-text">Choose JSON File</span>
+                                <span class="file-label-hint">or drag and drop</span>
+                            </label>
+                        </div>
+                        <div id="file2-info" class="file-info"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Document Selection -->
+            <section id="selection-section" class="selection-section" style="display: none;">
+                <div class="section-title">
+                    <i data-lucide="file-search"></i>
+                    <h2>Select Documents to Compare</h2>
+                </div>
+                
+                <div class="selection-container">
+                    <div class="select-group">
+                        <label class="select-label">
+                            <span class="select-label-text">Document from Package 1</span>
+                            <select id="doc1-select" class="select-input">
+                                <option value="">-- Select Document --</option>
+                            </select>
+                        </label>
+                    </div>
+
+                    <div class="select-divider">
+                        <i data-lucide="arrow-right"></i>
+                    </div>
+
+                    <div class="select-group">
+                        <label class="select-label">
+                            <span class="select-label-text">Document from Package 2</span>
+                            <select id="doc2-select" class="select-input">
+                                <option value="">-- Select Document --</option>
+                            </select>
+                        </label>
+                    </div>
+                </div>
+
+                <button id="compare-btn" class="compare-button" disabled>
                     <i data-lucide="git-compare"></i>
-                    Comparison
+                    <span>Compare Documents</span>
                 </button>
-                <button class="nav-btn" data-view="letters">
-                    <i data-lucide="mail"></i>
-                    Letters
-                </button>
-            </nav>
-        </div>
-    </header>
+            </section>
 
-    <!-- Main Content -->
-    <main class="main-content">
-        <!-- Dashboard View -->
-        <section id="dashboard-view" class="view active">
-            <div class="page-header">
-                <h2>Policy Review Dashboard</h2>
-                <p class="subtitle">Review and compare policy documents with automated analysis</p>
-            </div>
-
-            <!-- Stats Cards -->
-            <div class="stats-grid">
-                <div class="stat-card">
-                    <div class="stat-icon blue">
-                        <i data-lucide="file-text"></i>
+            <!-- Loading Animation with Gradient Progress Bar -->
+            <div id="loading-section" class="loading-section" style="display: none;">
+                <div class="loading-content">
+                    <div class="loading-icon">
+                        <i data-lucide="file-search"></i>
                     </div>
-                    <div class="stat-content">
-                        <h3>Total Policies</h3>
-                        <p class="stat-number">24</p>
-                        <span class="stat-change positive">+3 this month</span>
-                    </div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-icon orange">
-                        <i data-lucide="alert-circle"></i>
-                    </div>
-                    <div class="stat-content">
-                        <h3>Pending Reviews</h3>
-                        <p class="stat-number">8</p>
-                        <span class="stat-change">Requires attention</span>
-                    </div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-icon green">
-                        <i data-lucide="check-circle"></i>
-                    </div>
-                    <div class="stat-content">
-                        <h3>Completed</h3>
-                        <p class="stat-number">16</p>
-                        <span class="stat-change positive">67% completion rate</span>
-                    </div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-icon purple">
-                        <i data-lucide="trending-up"></i>
-                    </div>
-                    <div class="stat-content">
-                        <h3>Avg. Review Time</h3>
-                        <p class="stat-number">2.4h</p>
-                        <span class="stat-change positive">-15% faster</span>
+                    <h3 class="loading-title">Analyzing Documents</h3>
+                    <p class="loading-text">Comparing fields and detecting differences...</p>
+                    
+                    <!-- Gradient Progress Bar -->
+                    <div class="progress-container">
+                        <div class="progress-bar">
+                            <div class="progress-fill"></div>
+                            <div class="progress-glow"></div>
+                        </div>
+                        <div class="progress-stages">
+                            <span class="stage active">Parsing</span>
+                            <span class="stage">Comparing</span>
+                            <span class="stage">Analyzing</span>
+                            <span class="stage">Complete</span>
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Recent Policies -->
-            <div class="section-card">
-                <div class="section-header">
-                    <h3>Recent Policy Reviews</h3>
-                    <button class="btn-secondary">
-                        <i data-lucide="filter"></i>
-                        Filter
-                    </button>
+            <!-- Dashboard Section -->
+            <section id="dashboard-section" class="dashboard-section" style="display: none;">
+                <div class="section-title">
+                    <i data-lucide="layout-dashboard"></i>
+                    <h2>Discrepancy Dashboard</h2>
                 </div>
-                <div class="table-container">
-                    <table class="data-table">
-                        <thead>
-                            <tr>
-                                <th>Policy ID</th>
-                                <th>Policyholder</th>
-                                <th>Type</th>
-                                <th>Status</th>
-                                <th>Issues Found</th>
-                                <th>Last Updated</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody id="policies-table-body">
-                            <!-- Populated by JavaScript -->
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </section>
 
-        <!-- Comparison View -->
-        <section id="comparison-view" class="view">
-            <div class="page-header">
-                <button class="btn-back" onclick="showView('dashboard')">
-                    <i data-lucide="arrow-left"></i>
-                    Back to Dashboard
-                </button>
-                <h2>Policy Comparison Analysis</h2>
-                <p class="subtitle">Detailed comparison of policy documents and extracted data</p>
-            </div>
-
-            <!-- Policy Selection -->
-            <div class="section-card">
-                <div class="section-header">
-                    <h3>Selected Policy</h3>
-                    <div class="policy-badge">
-                        <i data-lucide="file-check"></i>
-                        <span id="selected-policy-id">POL-2024-001</span>
+                <!-- Stats Cards -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon match">
+                            <i data-lucide="check-circle"></i>
+                        </div>
+                        <div class="stat-content">
+                            <div class="stat-value" id="stat-matches">0</div>
+                            <div class="stat-label">Matches</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon diff">
+                            <i data-lucide="alert-circle"></i>
+                        </div>
+                        <div class="stat-content">
+                            <div class="stat-value" id="stat-diffs">0</div>
+                            <div class="stat-label">Differences</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon missing">
+                            <i data-lucide="x-circle"></i>
+                        </div>
+                        <div class="stat-content">
+                            <div class="stat-value" id="stat-missing">0</div>
+                            <div class="stat-label">Missing</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon total">
+                            <i data-lucide="file-text"></i>
+                        </div>
+                        <div class="stat-content">
+                            <div class="stat-value" id="stat-total">0</div>
+                            <div class="stat-label">Total Fields</div>
+                        </div>
                     </div>
                 </div>
-                <div class="policy-info-grid">
-                    <div class="info-item">
-                        <label>Policyholder</label>
-                        <p id="policy-holder">John Anderson</p>
-                    </div>
-                    <div class="info-item">
-                        <label>Policy Type</label>
-                        <p id="policy-type">Commercial Property</p>
-                    </div>
-                    <div class="info-item">
-                        <label>Coverage Amount</label>
-                        <p id="coverage-amount">$2,500,000</p>
-                    </div>
-                    <div class="info-item">
-                        <label>Review Date</label>
-                        <p id="review-date">December 10, 2025</p>
-                    </div>
-                </div>
-            </div>
 
-            <!-- Comparison Results -->
-            <div class="comparison-grid">
-                <!-- Field Discrepancies -->
-                <div class="section-card">
-                    <div class="section-header">
-                        <h3>Field Discrepancies</h3>
-                        <span class="badge badge-warning" id="discrepancy-count">5 Issues</span>
+                <!-- Charts - Optimized Size -->
+                <div class="charts-container">
+                    <div class="chart-wrapper">
+                        <div class="chart-card">
+                            <h3 class="chart-title">
+                                <i data-lucide="pie-chart"></i>
+                                Comparison Overview
+                            </h3>
+                            <div class="chart-canvas-wrapper">
+                                <canvas id="overview-chart"></canvas>
+                            </div>
+                        </div>
                     </div>
-                    <div class="discrepancy-list" id="discrepancy-list">
-                        <!-- Populated by JavaScript -->
+                    <div class="chart-wrapper">
+                        <div class="chart-card">
+                            <h3 class="chart-title">
+                                <i data-lucide="bar-chart-3"></i>
+                                Field Distribution
+                            </h3>
+                            <div class="chart-canvas-wrapper">
+                                <canvas id="field-type-chart"></canvas>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
                 <!-- Coverage Analysis -->
-                <div class="section-card">
-                    <div class="section-header">
-                        <h3>Coverage Analysis</h3>
-                        <span class="badge badge-info">Analysis Complete</span>
-                    </div>
-                    <div class="coverage-items" id="coverage-items">
-                        <!-- Populated by JavaScript -->
-                    </div>
-                </div>
+                <div id="coverage-section" class="coverage-section"></div>
 
-                <!-- Endorsements -->
-                <div class="section-card">
-                    <div class="section-header">
-                        <h3>Endorsements</h3>
-                        <span class="badge badge-success" id="endorsement-count">3 Active</span>
-                    </div>
-                    <div class="endorsement-list" id="endorsement-list">
-                        <!-- Populated by JavaScript -->
-                    </div>
-                </div>
-
-                <!-- Risk Assessment -->
-                <div class="section-card">
-                    <div class="section-header">
-                        <h3>Risk Assessment</h3>
-                        <span class="badge badge-primary">Medium Risk</span>
-                    </div>
-                    <div class="risk-items" id="risk-items">
-                        <!-- Populated by JavaScript -->
-                    </div>
-                </div>
-            </div>
-
-            <!-- Action Buttons -->
-            <div class="action-bar">
-                <button class="btn-secondary">
-                    <i data-lucide="download"></i>
-                    Export Report
-                </button>
-                <button class="btn-primary" onclick="showView('letters')">
-                    <i data-lucide="mail"></i>
-                    Generate Review Letter
-                </button>
-            </div>
-        </section>
-
-        <!-- Letters View -->
-        <section id="letters-view" class="view">
-            <div class="page-header">
-                <button class="btn-back" onclick="showView('comparison')">
-                    <i data-lucide="arrow-left"></i>
-                    Back to Comparison
-                </button>
-                <h2>Review Letter Generation</h2>
-                <p class="subtitle">Automated letter generation based on policy review findings</p>
-            </div>
-
-            <!-- Letter Preview -->
-            <div class="letter-container">
-                <div class="letter-sidebar">
-                    <h3>Letter Options</h3>
-                    <div class="option-group">
-                        <label>Letter Type</label>
-                        <select id="letter-type" class="form-select">
-                            <option value="review">Policy Review Notice</option>
-                            <option value="correction">Correction Required</option>
-                            <option value="approval">Review Approved</option>
-                            <option value="rejection">Review Rejected</option>
-                        </select>
-                    </div>
-                    <div class="option-group">
-                        <label>Tone</label>
-                        <select id="letter-tone" class="form-select">
-                            <option value="formal">Formal</option>
-                            <option value="professional">Professional</option>
-                            <option value="friendly">Friendly</option>
-                        </select>
-                    </div>
-                    <div class="option-group">
-                        <label>Include Sections</label>
-                        <div class="checkbox-group">
-                            <label class="checkbox-label">
-                                <input type="checkbox" checked> Summary
-                            </label>
-                            <label class="checkbox-label">
-                                <input type="checkbox" checked> Discrepancies
-                            </label>
-                            <label class="checkbox-label">
-                                <input type="checkbox" checked> Required Actions
-                            </label>
-                            <label class="checkbox-label">
-                                <input type="checkbox"> Technical Details
-                            </label>
-                        </div>
-                    </div>
-                    <button class="btn-primary full-width" onclick="generateLetter()">
-                        <i data-lucide="wand-2"></i>
-                        Generate Letter
+                <!-- Action Buttons -->
+                <div class="action-buttons">
+                    <button id="generate-letter-btn" class="action-btn primary">
+                        <i data-lucide="file-text"></i>
+                        <span>Generate Difference Letter</span>
+                    </button>
+                    <button id="export-data-btn" class="action-btn secondary">
+                        <i data-lucide="download"></i>
+                        <span>Export Comparison Data</span>
                     </button>
                 </div>
+            </section>
 
-                <div class="letter-preview">
-                    <div class="letter-header">
-                        <h3>Letter Preview</h3>
-                        <div class="letter-actions">
-                            <button class="btn-icon" title="Copy to clipboard">
-                                <i data-lucide="copy"></i>
-                            </button>
-                            <button class="btn-icon" title="Download as PDF">
-                                <i data-lucide="download"></i>
-                            </button>
-                            <button class="btn-icon" title="Send via email">
-                                <i data-lucide="send"></i>
-                            </button>
-                        </div>
+            <!-- Comparison Results - Two Column Layout -->
+            <section id="comparison-section" class="comparison-section" style="display: none;">
+                
+                <div class="results-header">
+                    <div class="results-title">
+                        <i data-lucide="check-circle-2"></i>
+                        <h2>Detailed Comparison</h2>
                     </div>
-                    <div class="letter-content" id="letter-content">
-                        <!-- Letter content will be generated here -->
-                        <div class="letter-placeholder">
-                            <i data-lucide="file-text"></i>
-                            <p>Click "Generate Letter" to create a review letter based on the policy analysis</p>
+                    <div class="results-legend">
+                        <div class="legend-item">
+                            <span class="legend-dot match"></span>
+                            <span>Match</span>
+                        </div>
+                        <div class="legend-item">
+                            <span class="legend-dot diff"></span>
+                            <span>Different</span>
+                        </div>
+                        <div class="legend-item">
+                            <span class="legend-dot missing"></span>
+                            <span>Missing</span>
                         </div>
                     </div>
                 </div>
-            </div>
-        </section>
-    </main>
 
-    <!-- Loading Overlay -->
-    <div class="loading-overlay" id="loading-overlay">
-        <div class="loading-spinner"></div>
-        <p>Processing policy review...</p>
+                <!-- Header Fields - Side by Side -->
+                <div class="comparison-block">
+                    <div class="block-header">
+                        <i data-lucide="file-text"></i>
+                        <h3>Header Fields Comparison</h3>
+                        <span class="edit-hint">Click any value to edit</span>
+                    </div>
+                    <div class="side-by-side-container">
+                        <div class="document-column">
+                            <div class="column-header">Document 1</div>
+                            <div id="header-doc1" class="field-list"></div>
+                        </div>
+                        <div class="document-column">
+                            <div class="column-header">Document 2</div>
+                            <div id="header-doc2" class="field-list"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tabular Fields -->
+                <div id="tables-container"></div>
+
+            </section>
+
+            <!-- Letter Modal -->
+            <div id="letter-modal" class="modal" style="display: none;">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h2>Difference Letter</h2>
+                        <button class="modal-close" onclick="closeLetterModal()">
+                            <i data-lucide="x"></i>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div id="letter-content" class="letter-content"></div>
+                    </div>
+                    <div class="modal-footer">
+                        <button id="download-letter-btn" class="action-btn primary">
+                            <i data-lucide="download"></i>
+                            <span>Download Letter</span>
+                        </button>
+                        <button class="action-btn secondary" onclick="closeLetterModal()">
+                            <span>Close</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+
+        <!-- Footer -->
+        <footer class="app-footer">
+            <p>Document Comparison Tool &copy; 2025 - Advanced Analysis & Reporting</p>
+        </footer>
+
     </div>
 
     <script src="script.js"></script>
+    <script>
+        lucide.createIcons();
+    </script>
 </body>
 </html>
