@@ -1,10 +1,13 @@
 'use client';
 
 import { useDocumentStore } from '@/store/documentStore';
-import { isCoverageField, getDisplayValue } from '@/lib/semanticMatching';
-import { getEnhancedComparisonStatusSync } from '@/lib/asyncDocumentParser';
-import { useMemo } from 'react';
 
+// Commented out imports for disabled functionality
+// import { isCoverageField, getDisplayValue } from '@/lib/semanticMatching';
+// import { getEnhancedComparisonStatusSync } from '@/lib/asyncDocumentParser';
+// import { useMemo } from 'react';
+
+/*
 interface CoverageChange {
   fieldName: string;
   value1: string;
@@ -12,10 +15,13 @@ interface CoverageChange {
   type: 'increase' | 'restriction';
   impact: string;
 }
+*/
 
 export default function CoverageAnalysis() {
   const { comparisonData } = useDocumentStore();
 
+  // Coverage Impact Analysis logic commented out
+  /*
   const coverageChanges = useMemo(() => {
     if (!comparisonData) return [];
 
@@ -44,6 +50,7 @@ export default function CoverageAnalysis() {
 
     return changes;
   }, [comparisonData]);
+  */
 
   if (!comparisonData) return null;
 

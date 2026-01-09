@@ -19,25 +19,6 @@ export default function LoadingSection() {
     setLoadingError
   } = useDocumentStore();
 
-  useEffect(() => {
-    // Start processing when LoadingSection mounts
-    if (package1Data && package2Data && selectedDoc1 !== null && selectedDoc2 !== null) {
-      startProcessing();
-    }
-  }, []); // Only run once when component mounts
-
-  useEffect(() => {
-    // Initialize Lucide icons
-    const initIcons = () => {
-      if (typeof window !== 'undefined' && (window as any).lucide) {
-        (window as any).lucide.createIcons();
-      }
-    };
-    
-    const timeoutId = setTimeout(initIcons, 100);
-    return () => clearTimeout(timeoutId);
-  }, [loadingStep]);
-
   const startProcessing = async () => {
     if (!package1Data || !package2Data || selectedDoc1 === null || selectedDoc2 === null) {
       return;
@@ -85,6 +66,13 @@ export default function LoadingSection() {
 
   // Helper function for realistic delays
   const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+
+  useEffect(() => {
+    // Start processing when LoadingSection mounts
+    if (package1Data && package2Data && selectedDoc1 !== null && selectedDoc2 !== null) {
+      startProcessing();
+    }
+  }, [package1Data, package2Data, selectedDoc1, selectedDoc2]);
 
   const currentStep = loadingSteps[loadingStep] || 'Processing...';
   const progress = loadingSteps.length > 0 ? ((loadingStep + 1) / loadingSteps.length) * 100 : 0;
