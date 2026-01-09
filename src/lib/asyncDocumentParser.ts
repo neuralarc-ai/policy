@@ -207,10 +207,9 @@ export async function getEnhancedComparisonStatus(
   
   const result = await globalEnhancedMatcher.compareFieldsEnhanced(val1, val2, fieldName);
   
-  if (result.match === true) {
+  if (result.match === true || result.match === 'ambiguous') {
+    // Treat both exact matches and ambiguous matches as matches
     return 'match';
-  } else if (result.match === 'ambiguous') {
-    return 'ambiguous';
   } else if (!val1 || !val2) {
     return 'missing';
   } else {
@@ -236,10 +235,9 @@ export function getEnhancedComparisonStatusSync(
   
   const result = globalEnhancedMatcher.compareFieldsSync(val1, val2, fieldName);
   
-  if (result.match === true) {
+  if (result.match === true || result.match === 'ambiguous') {
+    // Treat both exact matches and ambiguous matches as matches
     return 'match';
-  } else if (result.match === 'ambiguous') {
-    return 'ambiguous';
   } else if (!val1 || !val2) {
     return 'missing';
   } else {

@@ -1801,12 +1801,15 @@ body {
     font-style: italic;
 }
 
+/* Ambiguous styling removed - treat as regular matches */
+/*
 .field-item-value.ambiguous {
     background: #e8f4f8;
     color: var(--text-primary);
     border: 2px dashed #0288d1;
     position: relative;
 }
+*/
 
 .field-item-value.ambiguous::after {
     content: '?';
@@ -1836,10 +1839,13 @@ body {
     margin-left: 8px;
 }
 
+/* Critical item ambiguous styling removed */
+/*
 .critical-item.ambiguous {
     border: 2px dashed #0288d1;
     background: #e8f4f8;
 }
+*/
 
 /* Table cell status colors */
 .match-cell {
@@ -1856,10 +1862,13 @@ body {
     font-style: italic;
 }
 
+/* Ambiguous cell styling removed */
+/*
 .ambiguous-cell {
     background: #e8f4f8;
     border: 2px dashed #0288d1;
 }
+*/
 
 .field-item-value.editable {
     cursor: pointer;

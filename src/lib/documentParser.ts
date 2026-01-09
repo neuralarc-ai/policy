@@ -71,10 +71,9 @@ export function parseFields(fieldList: RawField[]): ParsedFields {
 export function getComparisonStatus(val1: string, val2: string, fieldName: string): ComparisonStatus {
   const semanticResult = areValuesSemanticallyEqual(val1, val2);
   
-  if (semanticResult.match === true) {
+  if (semanticResult.match === true || semanticResult.match === 'ambiguous') {
+    // Treat both exact matches and ambiguous matches as matches
     return 'match';
-  } else if (semanticResult.match === 'ambiguous') { // FIXED: was checking confidence instead of match
-    return 'ambiguous';
   } else if (!val1 || !val2) {
     return 'missing';
   } else {
