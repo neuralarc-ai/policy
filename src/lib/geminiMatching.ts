@@ -1,4 +1,5 @@
 import { GoogleGenerativeAI } from '@google/generative-ai';
+import { config } from './config';
 
 export interface GeminiMatchResult {
   match: boolean | 'ambiguous';
@@ -32,7 +33,7 @@ export class GeminiSemanticMatcher {
     
     this.genAI = new GoogleGenerativeAI(apiKey);
     this.model = this.genAI.getGenerativeModel({ 
-      model: 'gemini-2.5-pro', // Using Gemini 2.5 Pro as requested
+      model: config.gemini.model, // Use model from configuration
       generationConfig: {
         temperature: 0.1, // Low temperature for consistent results
         topP: 0.8,

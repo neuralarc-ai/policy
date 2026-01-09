@@ -10,7 +10,7 @@ import LoadingSection from '@/components/LoadingSection';
 import ResultsSection from '@/components/ResultsSection';
 
 export default function HomePage() {
-  const { currentSection } = useDocumentStore();
+  const { currentSection, loadingSteps } = useDocumentStore();
 
   // Simple, non-conflicting icon initialization
   useEffect(() => {

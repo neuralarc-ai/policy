@@ -31,15 +31,28 @@ export default function CriticalMismatches() {
       
       const matchResult = areValuesSemanticallyEqual(val1, val2);
       
-      if (!matchResult.match) {
+      // Only show as mismatch if it's a clear non-match (not ambiguous)
+      if (matchResult.match === false) {
         results.push({
           fieldName,
           value1: getDisplayValue(val1),
           value2: getDisplayValue(val2),
           type: 'header',
           isCritical: isCriticalField(fieldName),
-          isAmbiguous: matchResult.confidence === 'ambiguous'
+          isAmbiguous: false
         });
+      } else if (matchResult.match === 'ambiguous') {
+        // Show ambiguous matches only for critical fields
+        if (isCriticalField(fieldName)) {
+          results.push({
+            fieldName,
+            value1: getDisplayValue(val1),
+            value2: getDisplayValue(val2),
+            type: 'header',
+            isCritical: true,
+            isAmbiguous: true
+          });
+        }
       }
     });
 

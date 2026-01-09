@@ -11,10 +11,12 @@ A sophisticated Next.js application for comparing insurance policy documents wit
 - **Real-time Analysis**: Live statistics and comparison status updates
 
 ### Advanced Comparison
+- **AI-Powered Semantic Matching**: Gemini 2.0 AI integration for superior field comparison accuracy
 - **Smart Table Row Matching**: Context-aware matching of tabular data
 - **Date Recognition**: Flexible date parsing and normalization  
 - **Coverage Analysis**: Automatic detection of coverage changes and impact assessment
 - **Critical Mismatch Detection**: Prioritized display of important field differences
+- **Hybrid Matching**: Combines rule-based and AI-powered comparison for optimal accuracy
 
 ### Visualization & Reporting
 - **Interactive Charts**: Pie charts showing comparison statistics and field distribution
@@ -32,6 +34,7 @@ A sophisticated Next.js application for comparing insurance policy documents wit
 
 - **Framework**: Next.js 15 with App Router
 - **Language**: TypeScript for type safety
+- **AI Integration**: Google Gemini 2.0 for advanced semantic matching
 - **Styling**: Tailwind CSS for modern, responsive design
 - **State Management**: Zustand for lightweight state management
 - **Charts**: Chart.js for interactive data visualization
@@ -42,6 +45,7 @@ A sophisticated Next.js application for comparing insurance policy documents wit
 ### Prerequisites
 - Node.js 18+ installed
 - npm or yarn package manager
+- Google Gemini API key (for AI-powered comparison)
 
 ### Installation
 
@@ -55,7 +59,18 @@ A sophisticated Next.js application for comparing insurance policy documents wit
    npm install
    ```
 
-3. **Start the development server:**
+3. **Configure environment variables:**
+   ```bash
+   cp env.example .env.local
+   ```
+   Edit `.env.local` and add your Gemini API key:
+   ```bash
+   # Get your API key from: https://makersuite.google.com/app/apikey
+   NEXT_PUBLIC_GEMINI_API_KEY=your_actual_gemini_api_key_here
+   NEXT_PUBLIC_ENABLE_GEMINI=true
+   ```
+
+4. **Start the development server:**
    ```bash
    npm run dev
    ```
@@ -163,6 +178,34 @@ Multiple export options for different use cases:
 - **Difference Letters**: Professional HTML reports suitable for client communication
 - **Raw Data Export**: JSON format containing all comparison data and edit history
 - **Print-Friendly**: Clean formatting optimized for printing or PDF generation
+
+## AI-Powered Comparison Features
+
+This application now includes **Google Gemini 2.0 AI integration** for superior document comparison accuracy:
+
+### What Gemini AI Provides
+- **Advanced Semantic Understanding**: Recognizes when different phrasings mean the same thing
+- **Context-Aware Matching**: Understands insurance terminology and domain-specific language
+- **Complex Value Comparison**: Handles edge cases that rule-based systems miss
+- **Ambiguity Detection**: Identifies potentially ambiguous matches for human review
+
+### How It Works
+1. **Hybrid Approach**: Combines fast rule-based matching with AI-powered analysis
+2. **Batch Processing**: Efficiently processes multiple fields simultaneously 
+3. **Intelligent Fallback**: Uses rule-based matching when AI is unavailable
+4. **Performance Optimized**: Caches results and implements rate limiting
+
+### Setup Requirements
+- Get a Gemini API key from [Google AI Studio](https://makersuite.google.com/app/apikey)
+- Set `NEXT_PUBLIC_GEMINI_API_KEY` in your `.env.local` file
+- Enable with `NEXT_PUBLIC_ENABLE_GEMINI=true`
+
+### Visual Indicators
+- 🧠 **Brain icon** in stats when AI is active
+- ✨ **"Gemini Enhanced"** label shows AI is processing
+- **Processing time** and **AI vs rule-based match counts** displayed
+
+The application gracefully handles cases where Gemini is unavailable, falling back to the comprehensive rule-based semantic matching system.
 
 ## Development
 

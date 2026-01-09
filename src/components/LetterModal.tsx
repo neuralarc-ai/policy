@@ -2,7 +2,7 @@
 
 import { useMemo } from 'react';
 import { useDocumentStore } from '@/store/documentStore';
-import { getComparisonStatus } from '@/lib/documentParser';
+import { getEnhancedComparisonStatusSync } from '@/lib/asyncDocumentParser';
 
 interface LetterModalProps {
   onClose: () => void;
@@ -41,7 +41,7 @@ export default function LetterModal({ onClose }: LetterModalProps) {
           type: 'missing'
         });
       } else {
-        const status = getComparisonStatus(val1, val2, fieldName);
+        const status = getEnhancedComparisonStatusSync(val1, val2, fieldName);
         if (status !== 'match') {
           headerDiffs.push({
             field: fieldName,

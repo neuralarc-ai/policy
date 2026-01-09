@@ -1,6 +1,7 @@
 'use client';
 
 import { useDocumentStore } from '@/store/documentStore';
+import { config } from '@/lib/config';
 
 export default function SelectionSection() {
   const { 
@@ -10,7 +11,8 @@ export default function SelectionSection() {
     selectedDoc2, 
     setSelectedDocument,
     setCurrentSection,
-    setLoading
+    setLoadingStep,
+    resetComparison
   } = useDocumentStore();
 
   const handleDoc1Change = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -24,14 +26,20 @@ export default function SelectionSection() {
   };
 
   const handleCompare = () => {
-    setLoading(true);
-    setCurrentSection('loading');
+    // Reset any previous comparison data
+    resetComparison();
     
-    // Simulate processing time
-    setTimeout(() => {
-      setCurrentSection('results');
-      setLoading(false);
-    }, 3000);
+    // Define processing steps for document comparison
+    const steps = [
+      'Parsing document fields',
+      'Running semantic analysis', 
+      'Matching field values',
+      'Generating comparison results'
+    ];
+    
+    // Initialize loading with steps
+    setLoadingStep(0, steps);
+    setCurrentSection('loading');
   };
 
   const canCompare = selectedDoc1 !== null && selectedDoc2 !== null;

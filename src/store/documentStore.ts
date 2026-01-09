@@ -22,6 +22,11 @@ export interface DocumentStore {
   currentSection: 'upload' | 'selection' | 'loading' | 'results';
   isLoading: boolean;
   
+  // Enhanced loading state for better UX
+  loadingStep: number;
+  loadingSteps: string[];
+  loadingError: string | null;
+  
   // Edit tracking
   editHistory: EditHistoryItem[];
   pendingVerifications: PendingVerification[];
@@ -32,6 +37,9 @@ export interface DocumentStore {
   setComparisonData: (data: ComparisonData) => void;
   setCurrentSection: (section: 'upload' | 'selection' | 'loading' | 'results') => void;
   setLoading: (loading: boolean) => void;
+  setLoadingStep: (step: number, steps?: string[]) => void;
+  setLoadingError: (error: string | null) => void;
+  resetComparison: () => void;
   addEditHistory: (item: EditHistoryItem) => void;
   setPendingVerifications: (verifications: PendingVerification[]) => void;
   reset: () => void;
@@ -46,6 +54,9 @@ export const useDocumentStore = create<DocumentStore>((set, get) => ({
   comparisonData: null,
   currentSection: 'upload',
   isLoading: false,
+  loadingStep: 0,
+  loadingSteps: [],
+  loadingError: null,
   editHistory: [],
   pendingVerifications: [],
 
@@ -84,6 +95,26 @@ export const useDocumentStore = create<DocumentStore>((set, get) => ({
     set({ isLoading: loading });
   },
 
+  setLoadingStep: (step, steps) => {
+    set({ 
+      loadingStep: step,
+      ...(steps && { loadingSteps: steps })
+    });
+  },
+
+  setLoadingError: (error) => {
+    set({ loadingError: error });
+  },
+
+  resetComparison: () => {
+    set({ 
+      comparisonData: null,
+      loadingStep: 0,
+      loadingSteps: [],
+      loadingError: null
+    });
+  },
+
   addEditHistory: (item) => {
     set((state) => ({
       editHistory: [...state.editHistory, item]
@@ -103,6 +134,9 @@ export const useDocumentStore = create<DocumentStore>((set, get) => ({
       comparisonData: null,
       currentSection: 'upload',
       isLoading: false,
+      loadingStep: 0,
+      loadingSteps: [],
+      loadingError: null,
       editHistory: [],
       pendingVerifications: []
     });

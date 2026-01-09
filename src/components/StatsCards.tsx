@@ -8,6 +8,8 @@ export default function StatsCards() {
   if (!comparisonData) return null;
 
   const { matches, diffs, missing, total } = comparisonData.stats;
+  const enhancedStats = comparisonData.stats as any;
+  const hasEnhancedData = enhancedStats.aiMatches !== undefined;
 
   return (
     <div className="stats-grid">
@@ -18,7 +20,14 @@ export default function StatsCards() {
         </div>
         <div className="stat-content">
           <div className="stat-value">{matches}</div>
-          <div className="stat-label">Matches</div>
+          <div className="stat-label">
+            Matches
+            {hasEnhancedData && enhancedStats.aiMatches > 0 && (
+              <span className="text-xs text-blue-600 block">
+                {enhancedStats.aiMatches} advanced
+              </span>
+            )}
+          </div>
         </div>
       </div>
 
@@ -51,9 +60,27 @@ export default function StatsCards() {
         </div>
         <div className="stat-content">
           <div className="stat-value">{total}</div>
-          <div className="stat-label">Total Fields</div>
+          <div className="stat-label">
+            Total Fields
+          </div>
         </div>
       </div>
+      
+      {/* Processing Time (if available) */}
+      {hasEnhancedData && enhancedStats.processingTimeMs && (
+        <div className="stat-card col-span-full">
+          <div className="stat-icon">
+            <i data-lucide="timer"></i>
+          </div>
+          <div className="stat-content">
+            <div className="stat-value">{(enhancedStats.processingTimeMs / 1000).toFixed(1)}s</div>
+            <div className="stat-label">Processing Time</div>
+            <div className="text-xs text-gray-600">
+              Advanced: {enhancedStats.aiMatches || 0} | Standard: {enhancedStats.ruleBasedMatches || 0}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

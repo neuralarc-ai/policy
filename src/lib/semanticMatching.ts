@@ -20,6 +20,11 @@ export const INSURANCE_SYNONYMS: Record<string, string[]> = {
   'sublimit': ['sub-limit', 'per item limit', 'specific limit'],
   'liability': ['legal liability', 'third party liability'],
   'property': ['physical damage', 'property damage'],
+  // Time and place variations
+  'at the address of the named insured': ['at the address of named insured', 'at named insured address', 'at insured address'],
+  'standard time': ['std time', 'st time'],
+  'on both dates': ['on both date', 'both dates', 'for both dates'],
+  'noted above': ['mentioned above', 'specified above', 'indicated above', 'described above', 'listed above'],
   // Common abbreviations
   'gl': ['general liability', 'cgl', 'commercial general liability'],
   'wc': ['workers compensation', 'workers comp'],
@@ -85,15 +90,144 @@ export function areValuesSemanticallyEqual(val1: string, val2: string): Semantic
     }
   }
   
-  // Fuzzy string matching for potential synonyms
+  // Enhanced semantic matching for insurance content
+  const enhancedMatch = enhancedSemanticComparison(norm1, norm2);
+  if (enhancedMatch.match) {
+    return enhancedMatch;
+  }
+  
+  // Fuzzy string matching - LOWERED thresholds for better insurance content matching
   const similarity = calculateStringSimilarity(lower1, lower2);
-  if (similarity > 0.85) {
+  if (similarity > 0.75) { // Lowered from 0.85
     return { match: true, confidence: 'high' } as const;
-  } else if (similarity > 0.7) {
+  } else if (similarity > 0.55) { // Lowered from 0.7 
     return { match: 'ambiguous', confidence: 'ambiguous', similarity } as const;
   }
   
   return { match: false, confidence: 'different' } as const;
+}
+
+// ===================================
+// ENHANCED SEMANTIC MATCHING FOR INSURANCE CONTENT
+// ===================================
+
+export function enhancedSemanticComparison(text1: string, text2: string): SemanticMatchResult {
+  // Remove common filler words and normalize
+  const clean1 = removeFillerWords(text1);
+  const clean2 = removeFillerWords(text2);
+  
+  // Check if core content is the same
+  if (clean1 === clean2) {
+    return { match: true, confidence: 'high' } as const;
+  }
+  
+  // Check for substantial overlap with minor additions
+  const overlapScore = calculateContentOverlap(clean1, clean2);
+  if (overlapScore > 0.75) { // Lowered from 0.8 for better matching
+    return { match: true, confidence: 'high' } as const;
+  } else if (overlapScore > 0.6) { // Lowered from 0.65  
+    return { match: 'ambiguous', confidence: 'ambiguous', similarity: overlapScore } as const;
+  }
+  
+  // Check for time/place patterns specifically  
+  if (isTimeOrPlaceExpiry(text1) && isTimeOrPlaceExpiry(text2)) {
+    const timeMatch = compareTimePatterns(text1, text2);
+    if (timeMatch > 0.65) { // Lowered threshold
+      return { match: true, confidence: 'high' } as const;
+    } else if (timeMatch > 0.5) {
+      return { match: 'ambiguous', confidence: 'ambiguous', similarity: timeMatch } as const;
+    }
+  }
+  
+  // Special handling for insurance policy language - check if one text is just an expansion of the other
+  if (isTextExpansion(text1, text2)) {
+    return { match: true, confidence: 'high' } as const;
+  }
+  
+  return { match: false, confidence: 'different' } as const;
+}
+
+export function isTextExpansion(text1: string, text2: string): boolean {
+  const shorter = text1.length < text2.length ? text1 : text2;
+  const longer = text1.length < text2.length ? text2 : text1;
+  
+  // If one text is much longer, check if the shorter one is basically contained in the longer one
+  if (longer.length > shorter.length * 1.3) {
+    const shorterWords = new Set(shorter.toLowerCase().split(/\s+/));
+    const longerWords = new Set(longer.toLowerCase().split(/\s+/));
+    
+    // Check if most of the shorter text's words are in the longer text
+    const commonWords = [...shorterWords].filter(word => longerWords.has(word));
+    const containmentRatio = commonWords.length / shorterWords.size;
+    
+    // If 85% of the shorter text is contained in the longer text, it's likely an expansion
+    return containmentRatio >= 0.85;
+  }
+  
+  return false;
+}
+
+export function removeFillerWords(text: string): string {
+  const fillerWords = [
+    'the', 'at', 'of', 'and', 'or', 'in', 'on', 'to', 'for', 'with', 'by', 'from',
+    'above', 'below', 'noted', 'both', 'all', 'any', 'each', 'every', 'some',
+    'such', 'other', 'same', 'different', 'various', 'certain', 'particular',
+    'specified', 'mentioned', 'indicated', 'described', 'following', 'preceding'
+  ];
+  
+  return text
+    .toLowerCase()
+    .split(/\s+/)
+    .filter(word => !fillerWords.includes(word))
+    .join(' ')
+    .trim();
+}
+
+export function calculateContentOverlap(text1: string, text2: string): number {
+  const words1 = new Set(text1.split(/\s+/));
+  const words2 = new Set(text2.split(/\s+/));
+  
+  const intersection = new Set([...words1].filter(x => words2.has(x)));
+  const union = new Set([...words1, ...words2]);
+  
+  return union.size > 0 ? intersection.size / union.size : 0;
+}
+
+export function isTimeOrPlaceExpiry(text: string): boolean {
+  const timePatterns = ['am', 'pm', 'time', 'expiry', 'expire', 'address', 'insured', 'standard time'];
+  const lowerText = text.toLowerCase();
+  return timePatterns.some(pattern => lowerText.includes(pattern));
+}
+
+export function compareTimePatterns(text1: string, text2: string): number {
+  // Extract key time/place components
+  const extractKeyInfo = (text: string) => {
+    const lower = text.toLowerCase();
+    return {
+      hasTime: /\d+:\d+/.test(lower),
+      hasAM: lower.includes('am'),
+      hasPM: lower.includes('pm'),
+      hasStandardTime: lower.includes('standard time'),
+      hasAddress: lower.includes('address'),
+      hasInsured: lower.includes('insured'),
+      hasNamed: lower.includes('named')
+    };
+  };
+  
+  const info1 = extractKeyInfo(text1);
+  const info2 = extractKeyInfo(text2);
+  
+  let matches = 0;
+  let total = 0;
+  
+  Object.keys(info1).forEach(key => {
+    total++;
+    if (info1[key as keyof typeof info1] === info2[key as keyof typeof info2]) {
+      matches++;
+    }
+  });
+  
+  return total > 0 ? matches / total : 0;
 }
 
 // ===================================

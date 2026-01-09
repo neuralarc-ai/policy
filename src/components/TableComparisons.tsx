@@ -3,7 +3,7 @@
 import { useEffect } from 'react';
 import { useDocumentStore } from '@/store/documentStore';
 import { matchTableRows } from '@/lib/documentParser';
-import { getComparisonStatus } from '@/lib/documentParser';
+import { getEnhancedComparisonStatusSync } from '@/lib/asyncDocumentParser';
 import { getMissingText } from '@/lib/semanticMatching';
 import { TableRow } from '@/types/document';
 
@@ -66,7 +66,7 @@ export default function TableComparisons() {
         {columns.map(col => {
           const currentValue = currentRow?.columns[col]?.value || '';
           const compareValue = compareRow?.columns[col]?.value || '';
-          const status = getComparisonStatus(currentValue, compareValue, `${tableName} - ${col}`);
+          const status = getEnhancedComparisonStatusSync(currentValue, compareValue, `${tableName} - ${col}`);
           
           let cellClass = 'editable';
           if (!currentValue) {

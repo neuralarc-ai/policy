@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useDocumentStore } from '@/store/documentStore';
-import { getComparisonStatus } from '@/lib/documentParser';
+import { getEnhancedComparisonStatusSync } from '@/lib/asyncDocumentParser';
 import { getMissingText } from '@/lib/semanticMatching';
 
 export default function HeaderComparison() {
@@ -86,7 +86,7 @@ export default function HeaderComparison() {
     const value1 = comparisonData.doc1Fields.headers[fieldName]?.value || '';
     const value2 = comparisonData.doc2Fields.headers[fieldName]?.value || '';
     
-    const status = getComparisonStatus(value1, value2, fieldName);
+    const status = getEnhancedComparisonStatusSync(value1, value2, fieldName);
     
     if (docNum === 1 && !comparisonData.doc1Fields.headers[fieldName]) return 'missing';
     if (docNum === 2 && !comparisonData.doc2Fields.headers[fieldName]) return 'missing';

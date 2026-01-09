@@ -2,7 +2,7 @@
 
 import { useDocumentStore } from '@/store/documentStore';
 import { isCoverageField, getDisplayValue } from '@/lib/semanticMatching';
-import { getComparisonStatus } from '@/lib/documentParser';
+import { getEnhancedComparisonStatusSync } from '@/lib/asyncDocumentParser';
 import { useMemo } from 'react';
 
 interface CoverageChange {
@@ -32,7 +32,7 @@ export default function CoverageAnalysis() {
       const val1 = doc1Fields.headers[fieldName]?.value || '';
       const val2 = doc2Fields.headers[fieldName]?.value || '';
 
-      const status = getComparisonStatus(val1, val2, fieldName);
+      const status = getEnhancedComparisonStatusSync(val1, val2, fieldName);
 
       if (isCoverageField(fieldName) && status !== 'match') {
         const change = analyzeCoverageChange(fieldName, val1, val2);

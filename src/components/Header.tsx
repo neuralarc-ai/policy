@@ -17,7 +17,9 @@ export default function Header() {
           <i data-lucide="file-diff" className="brand-icon"></i>
           <h1 className="brand-title">Document Comparison</h1>
         </div>
-        <p className="brand-subtitle">Insurance Policy Document Analysis & Reporting Tool</p>
+        <div className="flex items-center justify-between">
+          <p className="brand-subtitle">Insurance Policy Document Analysis & Reporting Tool</p>
+        </div>
       </div>
     </header>
   );
