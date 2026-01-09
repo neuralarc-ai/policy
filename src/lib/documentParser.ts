@@ -11,7 +11,8 @@ import {
 import { 
   areValuesSemanticallyEqual, 
   calculateStringSimilarity,
-  getMissingText 
+  getMissingText,
+  shouldIgnoreField
 } from '@/lib/semanticMatching';
 
 // ===================================
@@ -94,6 +95,11 @@ export function calculateStats(doc1Fields: ParsedFields, doc2Fields: ParsedField
   ]);
   
   allHeaderFields.forEach(fieldName => {
+    // Skip ignored administrative fields
+    if (shouldIgnoreField(fieldName)) {
+      return;
+    }
+    
     const value1 = doc1Fields.headers[fieldName]?.value || '';
     const value2 = doc2Fields.headers[fieldName]?.value || '';
     

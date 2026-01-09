@@ -20,6 +20,12 @@ export const INSURANCE_SYNONYMS: Record<string, string[]> = {
   'sublimit': ['sub-limit', 'per item limit', 'specific limit'],
   'liability': ['legal liability', 'third party liability'],
   'property': ['physical damage', 'property damage'],
+  // Document type variations  
+  'binder': ['policy', 'certificate', 'document'],
+  'policy': ['binder', 'certificate', 'document'],
+  // Copy type variations
+  'broker copy': ['client copy', 'broker client copy', 'brokerclient copy'],
+  'client copy': ['broker copy', 'broker client copy', 'brokerclient copy'],
   // Time and place variations
   'at the address of the named insured': ['at the address of named insured', 'at named insured address', 'at insured address'],
   'standard time': ['std time', 'st time'],
@@ -592,6 +598,22 @@ export function isCriticalField(fieldName: string): boolean {
   
   const lowerField = fieldName.toLowerCase();
   return criticalKeywords.some(keyword => lowerField.includes(keyword));
+}
+
+export function shouldIgnoreField(fieldName: string): boolean {
+  const ignoredFields = [
+    'document type',
+    'brokerclient copy',
+    'broker client copy',
+    'copy type',
+    'document format',
+    'file type'
+  ];
+  
+  const lowerField = fieldName.toLowerCase();
+  return ignoredFields.some(ignored => 
+    lowerField.includes(ignored) || ignored.includes(lowerField)
+  );
 }
 
 export function isCoverageField(fieldName: string): boolean {

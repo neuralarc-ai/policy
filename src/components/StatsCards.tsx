@@ -65,22 +65,6 @@ export default function StatsCards() {
           </div>
         </div>
       </div>
-      
-      {/* Processing Time (if available) */}
-      {hasEnhancedData && enhancedStats.processingTimeMs && (
-        <div className="stat-card col-span-full">
-          <div className="stat-icon">
-            <i data-lucide="timer"></i>
-          </div>
-          <div className="stat-content">
-            <div className="stat-value">{(enhancedStats.processingTimeMs / 1000).toFixed(1)}s</div>
-            <div className="stat-label">Processing Time</div>
-            <div className="text-xs text-gray-600">
-              Advanced: {enhancedStats.aiMatches || 0} | Standard: {enhancedStats.ruleBasedMatches || 0}
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 }

@@ -8,6 +8,7 @@ import {
 import { parseFields, calculateStats, getComparisonStatus } from './documentParser';
 import { EnhancedSemanticMatcher, EnhancedMatchResult } from './enhancedSemanticMatching';
 import { config } from './config';
+import { shouldIgnoreField } from './semanticMatching';
 
 let globalEnhancedMatcher: EnhancedSemanticMatcher | null = null;
 
@@ -61,6 +62,11 @@ export async function processDocumentComparisonAsync(
   ]);
   
   allHeaderFields.forEach(fieldName => {
+    // Skip ignored administrative fields
+    if (shouldIgnoreField(fieldName)) {
+      return;
+    }
+    
     const val1 = doc1Fields.headers[fieldName]?.value || '';
     const val2 = doc2Fields.headers[fieldName]?.value || '';
     

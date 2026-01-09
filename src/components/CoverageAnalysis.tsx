@@ -47,6 +47,10 @@ export default function CoverageAnalysis() {
 
   if (!comparisonData) return null;
 
+  // Coverage Impact Analysis section commented out
+  return null;
+
+  /* 
   return (
     <div className="coverage-section">
       <div className="coverage-header">
@@ -80,8 +84,10 @@ export default function CoverageAnalysis() {
       </div>
     </div>
   );
+  */
 }
 
+/*
 function analyzeCoverageChange(fieldName: string, val1: string, val2: string): CoverageChange | null {
   const num1 = parseFloat(val1.replace(/[^0-9.-]/g, ''));
   const num2 = parseFloat(val2.replace(/[^0-9.-]/g, ''));
@@ -125,3 +131,4 @@ function analyzeCoverageChange(fieldName: string, val1: string, val2: string): C
     impact
   };
 }
+*/

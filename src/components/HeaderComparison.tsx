@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useDocumentStore } from '@/store/documentStore';
 import { getEnhancedComparisonStatusSync } from '@/lib/asyncDocumentParser';
-import { getMissingText } from '@/lib/semanticMatching';
+import { getMissingText, shouldIgnoreField } from '@/lib/semanticMatching';
 
 export default function HeaderComparison() {
   const { comparisonData, setComparisonData, addEditHistory } = useDocumentStore();
@@ -23,8 +23,13 @@ export default function HeaderComparison() {
     ...Object.keys(comparisonData.doc2Fields.headers)
   ]);
 
-  // Filter out fields where both sides are "Not Present"
+  // Filter out fields where both sides are "Not Present" and ignored administrative fields
   const fieldsToDisplay = Array.from(allFields).filter(fieldName => {
+    // Skip ignored administrative fields
+    if (shouldIgnoreField(fieldName)) {
+      return false;
+    }
+    
     const value1 = comparisonData.doc1Fields.headers[fieldName]?.value || '';
     const value2 = comparisonData.doc2Fields.headers[fieldName]?.value || '';
     

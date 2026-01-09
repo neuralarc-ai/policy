@@ -1,7 +1,7 @@
 'use client';
 
 import { useDocumentStore } from '@/store/documentStore';
-import { areValuesSemanticallyEqual, isCriticalField, getDisplayValue } from '@/lib/semanticMatching';
+import { areValuesSemanticallyEqual, isCriticalField, getDisplayValue, shouldIgnoreField } from '@/lib/semanticMatching';
 import { CriticalMismatch } from '@/types/document';
 import { useMemo } from 'react';
 
@@ -21,6 +21,11 @@ export default function CriticalMismatches() {
     ]);
     
     allHeaderFields.forEach(fieldName => {
+      // Skip ignored administrative fields
+      if (shouldIgnoreField(fieldName)) {
+        return;
+      }
+      
       const val1 = doc1Fields.headers[fieldName]?.value || '';
       const val2 = doc2Fields.headers[fieldName]?.value || '';
       
