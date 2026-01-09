@@ -1,0 +1,351 @@
+<meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document Comparison Tool - Advanced</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+</head>
+<body>
+    <div class="app-container">
+        
+        <!-- Header -->
+        <header class="app-header">
+            <div class="header-inner">
+                <div class="brand">
+                    <i data-lucide="file-diff" class="brand-icon"></i>
+                    <h1 class="brand-title">Document Comparison</h1>
+                </div>
+                <p class="brand-subtitle">Insurance Policy Document Analysis & Reporting Tool</p>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="app-main">
+            
+            <!-- Upload Section -->
+            <section class="upload-section">
+                <div class="section-title">
+                    <i data-lucide="upload-cloud"></i>
+                    <h2>Upload Documents</h2>
+                </div>
+                
+                <div class="upload-container">
+                    <div class="upload-card">
+                        <div class="upload-card-header">
+                            <span class="upload-number">01</span>
+                            <h3>First Package</h3>
+                        </div>
+                        <div class="upload-area">
+                            <input type="file" id="file1" accept=".json" class="file-input">
+                            <label for="file1" class="file-label">
+                                <i data-lucide="file-json-2"></i>
+                                <span class="file-label-text">Choose JSON File</span>
+                                <span class="file-label-hint">or drag and drop</span>
+                            </label>
+                        </div>
+                        <div id="file1-info" class="file-info"></div>
+                    </div>
+
+                    <div class="upload-card">
+                        <div class="upload-card-header">
+                            <span class="upload-number">02</span>
+                            <h3>Second Package</h3>
+                        </div>
+                        <div class="upload-area">
+                            <input type="file" id="file2" accept=".json" class="file-input">
+                            <label for="file2" class="file-label">
+                                <i data-lucide="file-json-2"></i>
+                                <span class="file-label-text">Choose JSON File</span>
+                                <span class="file-label-hint">or drag and drop</span>
+                            </label>
+                        </div>
+                        <div id="file2-info" class="file-info"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Document Selection -->
+            <section id="selection-section" class="selection-section" style="display: none;">
+                <div class="section-title">
+                    <i data-lucide="file-search"></i>
+                    <h2>Select Documents to Compare</h2>
+                </div>
+                
+                <div class="selection-container">
+                    <div class="select-group">
+                        <label class="select-label">
+                            <span class="select-label-text">Document from Package 1</span>
+                            <select id="doc1-select" class="select-input">
+                                <option value="">-- Select Document --</option>
+                            </select>
+                        </label>
+                    </div>
+
+                    <div class="select-divider">
+                        <i data-lucide="arrow-right"></i>
+                    </div>
+
+                    <div class="select-group">
+                        <label class="select-label">
+                            <span class="select-label-text">Document from Package 2</span>
+                            <select id="doc2-select" class="select-input">
+                                <option value="">-- Select Document --</option>
+                            </select>
+                        </label>
+                    </div>
+                </div>
+
+                <button id="compare-btn" class="compare-button" disabled>
+                    <i data-lucide="git-compare"></i>
+                    <span>Compare Documents</span>
+                </button>
+            </section>
+
+            <!-- Loading Animation with Gradient Progress Bar -->
+            <div id="loading-section" class="loading-section" style="display: none;">
+                <div class="loading-content">
+                    <div class="loading-icon">
+                        <i data-lucide="file-search"></i>
+                    </div>
+                    <h3 class="loading-title">Analyzing Documents</h3>
+                    <p class="loading-text">Comparing fields and detecting differences...</p>
+                    
+                    <!-- Gradient Progress Bar -->
+                    <div class="progress-container">
+                        <div class="progress-bar">
+                            <div class="progress-fill"></div>
+                            <div class="progress-glow"></div>
+                        </div>
+                        <div class="progress-stages">
+                            <span class="stage active">Parsing</span>
+                            <span class="stage">Comparing</span>
+                            <span class="stage">Analyzing</span>
+                            <span class="stage">Complete</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dashboard Section -->
+            <section id="dashboard-section" class="dashboard-section" style="display: none;">
+                
+                <!-- Critical Mismatches Alert - TOP PRIORITY -->
+                <div id="critical-mismatches" class="critical-section">
+                    <div class="critical-header">
+                        <i data-lucide="alert-triangle"></i>
+                        <h2>Critical Mismatches</h2>
+                        <span class="critical-count" id="mismatch-count">0</span>
+                    </div>
+                    <div id="critical-list" class="critical-list"></div>
+                </div>
+
+                <!-- Document Names Display -->
+                <div class="document-names-section">
+                    <div class="doc-name-card">
+                        <div class="doc-label">Document 1</div>
+                        <div class="doc-name" id="doc1-name">-</div>
+                    </div>
+                    <div class="doc-name-card">
+                        <div class="doc-label">Document 2</div>
+                        <div class="doc-name" id="doc2-name">-</div>
+                    </div>
+                </div>
+
+                <div class="section-title">
+                    <i data-lucide="layout-dashboard"></i>
+                    <h2>Discrepancy Dashboard</h2>
+                </div>
+
+                <!-- Stats Cards -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon match">
+                            <i data-lucide="check-circle"></i>
+                        </div>
+                        <div class="stat-content">
+                            <div class="stat-value" id="stat-matches">0</div>
+                            <div class="stat-label">Matches</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon diff">
+                            <i data-lucide="alert-circle"></i>
+                        </div>
+                        <div class="stat-content">
+                            <div class="stat-value" id="stat-diffs">0</div>
+                            <div class="stat-label">Differences</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon missing">
+                            <i data-lucide="x-circle"></i>
+                        </div>
+                        <div class="stat-content">
+                            <div class="stat-value" id="stat-missing">0</div>
+                            <div class="stat-label">Missing</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon total">
+                            <i data-lucide="file-text"></i>
+                        </div>
+                        <div class="stat-content">
+                            <div class="stat-value" id="stat-total">0</div>
+                            <div class="stat-label">Total Fields</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Charts - Optimized Size -->
+                <div class="charts-container">
+                    <div class="chart-wrapper">
+                        <div class="chart-card">
+                            <h3 class="chart-title">
+                                <i data-lucide="pie-chart"></i>
+                                Comparison Overview
+                            </h3>
+                            <div class="chart-canvas-wrapper">
+                                <canvas id="overview-chart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="chart-wrapper">
+                        <div class="chart-card">
+                            <h3 class="chart-title">
+                                <i data-lucide="bar-chart-3"></i>
+                                Field Distribution
+                            </h3>
+                            <div class="chart-canvas-wrapper">
+                                <canvas id="field-type-chart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Coverage Analysis -->
+                <div class="coverage-section">
+                    <div class="coverage-header">
+                        <i data-lucide="shield-alert"></i>
+                        <h3>Coverage Impact Analysis</h3>
+                    </div>
+                    <div id="coverage-analysis" class="coverage-grid"></div>
+                </div>
+
+                <!-- Endorsement Restrictions Section -->
+                <div id="endorsement-restrictions-section" class="coverage-section" style="display: none;">
+                    <div class="coverage-header">
+                        <i data-lucide="shield-x"></i>
+                        <h3>Endorsement Restrictions & Exclusions</h3>
+                    </div>
+                    <div id="endorsement-restrictions" class="coverage-grid"></div>
+                </div>
+
+                <!-- Human Verification Prompt -->
+                <div id="verification-prompt" class="verification-prompt" style="display: none;">
+                    <div class="verification-header">
+                        <i data-lucide="help-circle"></i>
+                        <h3>Ambiguous Matches - Please Verify</h3>
+                    </div>
+                    <p style="margin-bottom: 1rem; color: var(--text-secondary);">
+                        The following fields have similar but not identical values. Please verify if they should be considered matches:
+                    </p>
+                    <div id="verification-list" class="verification-list"></div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="action-buttons">
+                    <button id="generate-letter-btn" class="action-btn primary">
+                        <i data-lucide="file-text"></i>
+                        <span>Generate Difference Letter</span>
+                    </button>
+                    <button id="export-data-btn" class="action-btn secondary">
+                        <i data-lucide="download"></i>
+                        <span>Export Comparison Data</span>
+                    </button>
+                </div>
+            </section>
+
+            <!-- Comparison Results - Two Column Layout -->
+            <section id="comparison-section" class="comparison-section" style="display: none;">
+                
+                <div class="results-header">
+                    <div class="results-title">
+                        <i data-lucide="check-circle-2"></i>
+                        <h2>Detailed Comparison</h2>
+                    </div>
+                    <div class="results-legend">
+                        <div class="legend-item">
+                            <span class="legend-dot match"></span>
+                            <span>Match</span>
+                        </div>
+                        <div class="legend-item">
+                            <span class="legend-dot diff"></span>
+                            <span>Different</span>
+                        </div>
+                        <div class="legend-item">
+                            <span class="legend-dot missing"></span>
+                            <span>Missing</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Header Fields - Side by Side -->
+                <div class="comparison-block">
+                    <div class="block-header">
+                        <i data-lucide="file-text"></i>
+                        <h3>Header Fields Comparison</h3>
+                        <span class="edit-hint">Click any value to edit</span>
+                    </div>
+                    <div class="side-by-side-container">
+                        <div class="document-column">
+                            <div class="column-header">Document 1</div>
+                            <div id="header-doc1" class="field-list"></div>
+                        </div>
+                        <div class="document-column">
+                            <div class="column-header">Document 2</div>
+                            <div id="header-doc2" class="field-list"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tabular Fields -->
+                <div id="tables-container"></div>
+
+            </section>
+
+            <!-- Letter Modal -->
+            <div id="letter-modal" class="modal" style="display: none;">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h2>Difference Letter</h2>
+                        <button class="modal-close" onclick="closeLetterModal()">
+                            <i data-lucide="x"></i>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div id="letter-content" class="letter-content"></div>
+                    </div>
+                    <div class="modal-footer">
+                        <button id="download-letter-btn" class="action-btn primary">
+                            <i data-lucide="download"></i>
+                            <span>Download Letter</span>
+                        </button>
+                        <button class="action-btn secondary" onclick="closeLetterModal()">
+                            <span>Close</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+
+        <!-- Footer -->
+        <footer class="app-footer">
+            <p>Document Comparison Tool &copy; 2025 - Advanced Analysis & Reporting</p>
+        </footer>
+
+    </div>
+
+    <script src="script.js"></script>
+    <script>
+        lucide.createIcons();
