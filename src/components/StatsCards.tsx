@@ -42,14 +42,14 @@ export default function StatsCards() {
         </div>
       </div>
 
-      {/* Missing */}
+      {/* Not Present */}
       <div className="stat-card">
         <div className="stat-icon missing">
           <i data-lucide="x-circle"></i>
         </div>
         <div className="stat-content">
           <div className="stat-value">{missing}</div>
-          <div className="stat-label">Missing</div>
+          <div className="stat-label">Not Present</div>
         </div>
       </div>
 

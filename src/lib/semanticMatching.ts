@@ -20,6 +20,13 @@ export const INSURANCE_SYNONYMS: Record<string, string[]> = {
   'sublimit': ['sub-limit', 'per item limit', 'specific limit'],
   'liability': ['legal liability', 'third party liability'],
   'property': ['physical damage', 'property damage'],
+  
+  // Crime/Fidelity coverage specific terms
+  'money orders and counterfeit paper': ['money orders and counterfeit money', 'counterfeit money orders', 'money order fraud'],
+  'money orders and counterfeit money': ['money orders and counterfeit paper', 'counterfeit money orders', 'money order fraud'], 
+  'funds transfer fraud': ['electronic funds transfer fraud', 'wire fraud', 'transfer fraud'],
+  'clients property': ['client property', 'clients\' property', 'customer property'],
+  'client property': ['clients property', 'clients\' property', 'customer property'],
   // Document type variations  
   'binder': ['policy', 'certificate', 'document'],
   'policy': ['binder', 'certificate', 'document'],
@@ -241,6 +248,12 @@ export function compareTimePatterns(text1: string, text2: string): number {
 // ===================================
 
 export function areDatesEqual(val1: string, val2: string): { isDate: boolean; match: boolean } {
+  // Handle date ranges first
+  if (val1.includes(' to ') || val2.includes(' to ') || 
+      val1.includes(' - ') || val2.includes(' - ')) {
+    return compareDateRanges(val1, val2);
+  }
+  
   const date1 = parseFlexibleDate(val1);
   const date2 = parseFlexibleDate(val2);
   
@@ -251,6 +264,45 @@ export function areDatesEqual(val1: string, val2: string): { isDate: boolean; ma
   // Compare normalized dates
   const match = date1.getTime() === date2.getTime();
   return { isDate: true, match: match };
+}
+
+export function compareDateRanges(val1: string, val2: string): { isDate: boolean; match: boolean } {
+  // Extract date ranges
+  const range1 = extractDateRange(val1);
+  const range2 = extractDateRange(val2);
+  
+  if (!range1 || !range2) {
+    return { isDate: false, match: false };
+  }
+  
+  // Compare start and end dates
+  const startMatch = range1.start.getTime() === range2.start.getTime();
+  const endMatch = range1.end.getTime() === range2.end.getTime();
+  
+  return { isDate: true, match: startMatch && endMatch };
+}
+
+export function extractDateRange(dateRangeStr: string): { start: Date; end: Date } | null {
+  if (!dateRangeStr) return null;
+  
+  // Split by common range separators
+  let parts: string[] = [];
+  if (dateRangeStr.includes(' to ')) {
+    parts = dateRangeStr.split(' to ');
+  } else if (dateRangeStr.includes(' - ')) {
+    parts = dateRangeStr.split(' - ');
+  } else if (dateRangeStr.includes('-') && dateRangeStr.split('-').length === 2) {
+    parts = dateRangeStr.split('-');
+  }
+  
+  if (parts.length !== 2) return null;
+  
+  const startDate = parseFlexibleDate(parts[0].trim());
+  const endDate = parseFlexibleDate(parts[1].trim());
+  
+  if (!startDate || !endDate) return null;
+  
+  return { start: startDate, end: endDate };
 }
 
 export function parseFlexibleDate(dateStr: string): Date | null {
@@ -283,18 +335,18 @@ export function parseFlexibleDate(dateStr: string): Date | null {
   ];
   
   const monthNames: Record<string, number> = {
-    'january': 0, 'jan': 0,
-    'february': 1, 'feb': 1,
-    'march': 2, 'mar': 2,
-    'april': 3, 'apr': 3,
-    'may': 4,
-    'june': 5, 'jun': 5,
-    'july': 6, 'jul': 6,
-    'august': 7, 'aug': 7,
-    'september': 8, 'sep': 8, 'sept': 8,
-    'october': 9, 'oct': 9,
-    'november': 10, 'nov': 10,
-    'december': 11, 'dec': 11
+    'january': 0, 'jan': 0, 'JANUARY': 0, 'JAN': 0,
+    'february': 1, 'feb': 1, 'FEBRUARY': 1, 'FEB': 1,
+    'march': 2, 'mar': 2, 'MARCH': 2, 'MAR': 2,
+    'april': 3, 'apr': 3, 'APRIL': 3, 'APR': 3,
+    'may': 4, 'MAY': 4,
+    'june': 5, 'jun': 5, 'JUNE': 5, 'JUN': 5,
+    'july': 6, 'jul': 6, 'JULY': 6, 'JUL': 6,
+    'august': 7, 'aug': 7, 'AUGUST': 7, 'AUG': 7,
+    'september': 8, 'sep': 8, 'sept': 8, 'SEPTEMBER': 8, 'SEP': 8, 'SEPT': 8,
+    'october': 9, 'oct': 9, 'OCTOBER': 9, 'OCT': 9,
+    'november': 10, 'nov': 10, 'NOVEMBER': 10, 'NOV': 10,
+    'december': 11, 'dec': 11, 'DECEMBER': 11, 'DEC': 11
   };
   
   // Try each format

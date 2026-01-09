@@ -172,7 +172,7 @@ export function matchTableRows(table1: TableRow[], table2: TableRow[]): TableRow
   const unmatchedTable1 = [...table1];
   const unmatchedTable2 = [...table2];
   
-  // First pass: Try to match rows by content similarity
+  // First pass: Try to match rows by content similarity with improved thresholds
   table1.forEach((row1, idx1) => {
     let bestMatch: TableRow | null = null;
     let bestScore = 0;
@@ -180,7 +180,8 @@ export function matchTableRows(table1: TableRow[], table2: TableRow[]): TableRow
     
     unmatchedTable2.forEach((row2, idx2) => {
       const score = calculateRowSimilarity(row1, row2);
-      if (score > bestScore && score > 0.7) { // 70% similarity threshold
+      // Lowered threshold from 0.7 to 0.4 for better insurance coverage matching
+      if (score > bestScore && score > 0.4) { 
         bestScore = score;
         bestMatch = row2;
         bestIdx = idx2;
@@ -243,22 +244,77 @@ export function calculateRowSimilarity(row1: TableRow, row2: TableRow): number {
   let totalSimilarity = 0;
   let comparedColumns = 0;
   
-  commonColumns.forEach(col => {
+  // Focus on key columns that typically contain coverage names/descriptions
+  const keyColumns = commonColumns.filter(col => 
+    col.toLowerCase().includes('description') ||
+    col.toLowerCase().includes('coverage') ||
+    col.toLowerCase().includes('name') ||
+    col.toLowerCase().includes('type') ||
+    col.toLowerCase().includes('form')
+  );
+  
+  // If we have key columns, prioritize them
+  const columnsToCheck = keyColumns.length > 0 ? keyColumns : commonColumns;
+  
+  columnsToCheck.forEach(col => {
     const val1 = row1.columns[col]?.value || '';
     const val2 = row2.columns[col]?.value || '';
     
     if (val1 || val2) {
       const matchResult = areValuesSemanticallyEqual(val1, val2);
       if (matchResult.match === true) {
-        totalSimilarity += 1;
-      } else if (matchResult.confidence === 'ambiguous') {
-        totalSimilarity += matchResult.similarity || 0.5;
+        // Give higher weight to key columns
+        const weight = keyColumns.includes(col) ? 2 : 1;
+        totalSimilarity += weight;
+        comparedColumns += weight;
+      } else if (matchResult.match === 'ambiguous') {
+        const weight = keyColumns.includes(col) ? 2 : 1;
+        const similarity = matchResult.similarity || 0.5;
+        totalSimilarity += (similarity * weight);
+        comparedColumns += weight;
+      } else {
+        // Check for partial matches in coverage names
+        const partialMatch = calculateCoverageNameSimilarity(val1, val2);
+        if (partialMatch > 0.3) {
+          const weight = keyColumns.includes(col) ? 2 : 1;
+          totalSimilarity += (partialMatch * weight);
+          comparedColumns += weight;
+        } else {
+          comparedColumns += (keyColumns.includes(col) ? 2 : 1);
+        }
       }
-      comparedColumns++;
     }
   });
   
   return comparedColumns > 0 ? totalSimilarity / comparedColumns : 0;
+}
+
+// New function to calculate similarity for insurance coverage names
+export function calculateCoverageNameSimilarity(name1: string, name2: string): number {
+  if (!name1 || !name2) return 0;
+  
+  const normalize = (text: string) => text.toLowerCase()
+    .replace(/[^\w\s]/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+  
+  const norm1 = normalize(name1);
+  const norm2 = normalize(name2);
+  
+  // Check for common insurance coverage keywords
+  const keywords1 = norm1.split(' ');
+  const keywords2 = norm2.split(' ');
+  
+  // Find common keywords
+  const commonKeywords = keywords1.filter(word => 
+    keywords2.includes(word) && word.length > 2 // ignore short words
+  );
+  
+  const totalKeywords = new Set([...keywords1, ...keywords2]).size;
+  
+  if (totalKeywords === 0) return 0;
+  
+  return commonKeywords.length / totalKeywords;
 }
 
 // ===================================
