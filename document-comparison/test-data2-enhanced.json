@@ -1,0 +1,105 @@
+{
+  "batch": [
+    {
+      "packageID": "PKG002-ENHANCED",
+      "packageName": "Test Package with Date Variations 2",
+      "totalFiles": 1,
+      "packageStatus": "Processed",
+      "fileNameList": [
+        {
+          "fileName": "Policy_DateTest_B.json",
+          "fieldList": [
+            {
+              "fieldname": "Policy Number",
+              "rowid": "1",
+              "columnname": "",
+              "extracteddata": "ABC123456789",
+              "confidencescore": 0.96,
+              "confidenceflag": "high"
+            },
+            {
+              "fieldname": "Policy Effective Date",
+              "rowid": "1",
+              "columnname": "",
+              "extracteddata": "1 jan 2025",
+              "confidencescore": 0.97,
+              "confidenceflag": "high"
+            },
+            {
+              "fieldname": "Policy Expiry Date",
+              "rowid": "1",
+              "columnname": "",
+              "extracteddata": "December 31, 2025",
+              "confidencescore": 0.97,
+              "confidenceflag": "high"
+            },
+            {
+              "fieldname": "Coverage Type",
+              "rowid": "1",
+              "columnname": "",
+              "extracteddata": "GL",
+              "confidencescore": 0.94,
+              "confidenceflag": "high"
+            },
+            {
+              "fieldname": "Coverage Limit",
+              "rowid": "1",
+              "columnname": "",
+              "extracteddata": "1000000",
+              "confidencescore": 0.92,
+              "confidenceflag": "high"
+            },
+            {
+              "fieldname": "Deductible",
+              "rowid": "1",
+              "columnname": "",
+              "extracteddata": "5000",
+              "confidencescore": 0.90,
+              "confidenceflag": "high"
+            },
+            {
+              "fieldname": "Coverage Included",
+              "rowid": "1",
+              "columnname": "",
+              "extracteddata": "Y",
+              "confidencescore": 0.88,
+              "confidenceflag": "medium"
+            },
+            {
+              "fieldname": "Insured Name",
+              "rowid": "1",
+              "columnname": "",
+              "extracteddata": "J. Smith Corp",
+              "confidencescore": 0.85,
+              "confidenceflag": "medium"
+            },
+            {
+              "fieldname": "Premium Percentage",
+              "rowid": "1",
+              "columnname": "",
+              "extracteddata": "2.5 percent",
+              "confidencescore": 0.84,
+              "confidenceflag": "medium"
+            },
+            {
+              "fieldname": "Coverage Forms",
+              "rowid": "1",
+              "columnname": "Form Number",
+              "extracteddata": "CG0001",
+              "confidencescore": 0.88,
+              "confidenceflag": "medium"
+            },
+            {
+              "fieldname": "Coverage Forms",
+              "rowid": "1",
+              "columnname": "Form Name", 
+              "extracteddata": "CGL Coverage",
+              "confidencescore": 0.87,
+              "confidenceflag": "medium"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

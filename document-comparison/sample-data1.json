@@ -1,0 +1,113 @@
+{
+  "batch": [
+    {
+      "packageID": "PKG001",
+      "packageName": "Sample Insurance Package 1",
+      "totalFiles": 1,
+      "packageStatus": "Processed",
+      "fileNameList": [
+        {
+          "fileName": "Policy_ABC123.json",
+          "fieldList": [
+            {
+              "fieldname": "Policy Number",
+              "rowid": "1",
+              "columnname": "",
+              "extracteddata": "ABC123456789",
+              "confidencescore": 0.95,
+              "confidenceflag": "high"
+            },
+            {
+              "fieldname": "Insured Name",
+              "rowid": "1", 
+              "columnname": "",
+              "extracteddata": "John Smith Corp",
+              "confidencescore": 0.92,
+              "confidenceflag": "high"
+            },
+            {
+              "fieldname": "Effective Date",
+              "rowid": "1",
+              "columnname": "",
+              "extracteddata": "01/01/2024",
+              "confidencescore": 0.98,
+              "confidenceflag": "high"
+            },
+            {
+              "fieldname": "Expiration Date", 
+              "rowid": "1",
+              "columnname": "",
+              "extracteddata": "01/01/2025",
+              "confidencescore": 0.98,
+              "confidenceflag": "high"
+            },
+            {
+              "fieldname": "General Liability Limit",
+              "rowid": "1",
+              "columnname": "",
+              "extracteddata": "$1,000,000",
+              "confidencescore": 0.89,
+              "confidenceflag": "high"
+            },
+            {
+              "fieldname": "Deductible",
+              "rowid": "1", 
+              "columnname": "",
+              "extracteddata": "$5,000",
+              "confidencescore": 0.91,
+              "confidenceflag": "high"
+            },
+            {
+              "fieldname": "Coverage Forms",
+              "rowid": "1",
+              "columnname": "Form Number",
+              "extracteddata": "CG0001",
+              "confidencescore": 0.87,
+              "confidenceflag": "medium"
+            },
+            {
+              "fieldname": "Coverage Forms",
+              "rowid": "1",
+              "columnname": "Form Name", 
+              "extracteddata": "Commercial General Liability",
+              "confidencescore": 0.89,
+              "confidenceflag": "high"
+            },
+            {
+              "fieldname": "Coverage Forms",
+              "rowid": "1",
+              "columnname": "Summary",
+              "extracteddata": "Standard commercial general liability coverage",
+              "confidencescore": 0.85,
+              "confidenceflag": "medium"
+            },
+            {
+              "fieldname": "Coverage Forms",
+              "rowid": "2",
+              "columnname": "Form Number",
+              "extracteddata": "CG2404",
+              "confidencescore": 0.88,
+              "confidenceflag": "high"
+            },
+            {
+              "fieldname": "Coverage Forms",
+              "rowid": "2",
+              "columnname": "Form Name",
+              "extracteddata": "Exclusion - Professional Services",
+              "confidencescore": 0.91,
+              "confidenceflag": "high"
+            },
+            {
+              "fieldname": "Coverage Forms",
+              "rowid": "2",
+              "columnname": "Summary",
+              "extracteddata": "Excludes professional liability coverage",
+              "confidencescore": 0.87,
+              "confidenceflag": "medium"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

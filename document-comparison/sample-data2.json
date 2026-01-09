@@ -1,0 +1,137 @@
+{
+  "batch": [
+    {
+      "packageID": "PKG002",
+      "packageName": "Sample Insurance Package 2",
+      "totalFiles": 1,
+      "packageStatus": "Processed",
+      "fileNameList": [
+        {
+          "fileName": "Policy_ABC123_Renewal.json",
+          "fieldList": [
+            {
+              "fieldname": "Policy Number",
+              "rowid": "1",
+              "columnname": "",
+              "extracteddata": "ABC123456789",
+              "confidencescore": 0.96,
+              "confidenceflag": "high"
+            },
+            {
+              "fieldname": "Insured Name",
+              "rowid": "1",
+              "columnname": "",
+              "extracteddata": "John Smith Corporation",
+              "confidencescore": 0.93,
+              "confidenceflag": "high"
+            },
+            {
+              "fieldname": "Effective Date",
+              "rowid": "1",
+              "columnname": "",
+              "extracteddata": "01/01/2025",
+              "confidencescore": 0.97,
+              "confidenceflag": "high"
+            },
+            {
+              "fieldname": "Expiration Date",
+              "rowid": "1",
+              "columnname": "",
+              "extracteddata": "01/01/2026",
+              "confidencescore": 0.97,
+              "confidenceflag": "high"
+            },
+            {
+              "fieldname": "General Liability Limit",
+              "rowid": "1",
+              "columnname": "",
+              "extracteddata": "$2,000,000",
+              "confidencescore": 0.94,
+              "confidenceflag": "high"
+            },
+            {
+              "fieldname": "Deductible",
+              "rowid": "1",
+              "columnname": "",
+              "extracteddata": "$10,000",
+              "confidencescore": 0.92,
+              "confidenceflag": "high"
+            },
+            {
+              "fieldname": "Coverage Forms",
+              "rowid": "1",
+              "columnname": "Form Number",
+              "extracteddata": "CG0001",
+              "confidencescore": 0.88,
+              "confidenceflag": "medium"
+            },
+            {
+              "fieldname": "Coverage Forms",
+              "rowid": "1",
+              "columnname": "Form Name",
+              "extracteddata": "Commercial General Liability",
+              "confidencescore": 0.90,
+              "confidenceflag": "high"
+            },
+            {
+              "fieldname": "Coverage Forms",
+              "rowid": "1",
+              "columnname": "Summary",
+              "extracteddata": "Standard commercial general liability coverage",
+              "confidencescore": 0.86,
+              "confidenceflag": "medium"
+            },
+            {
+              "fieldname": "Coverage Forms",
+              "rowid": "2",
+              "columnname": "Form Number",
+              "extracteddata": "CG2404",
+              "confidencescore": 0.89,
+              "confidenceflag": "high"
+            },
+            {
+              "fieldname": "Coverage Forms",
+              "rowid": "2",
+              "columnname": "Form Name",
+              "extracteddata": "Exclusion - Professional Services",
+              "confidencescore": 0.92,
+              "confidenceflag": "high"
+            },
+            {
+              "fieldname": "Coverage Forms", 
+              "rowid": "2",
+              "columnname": "Summary",
+              "extracteddata": "Excludes professional liability coverage",
+              "confidencescore": 0.88,
+              "confidenceflag": "medium"
+            },
+            {
+              "fieldname": "Coverage Forms",
+              "rowid": "3",
+              "columnname": "Form Number",
+              "extracteddata": "CG2503",
+              "confidencescore": 0.85,
+              "confidenceflag": "medium"
+            },
+            {
+              "fieldname": "Coverage Forms",
+              "rowid": "3",
+              "columnname": "Form Name",
+              "extracteddata": "Additional Insured - Owners",
+              "confidencescore": 0.87,
+              "confidenceflag": "medium"
+            },
+            {
+              "fieldname": "Coverage Forms",
+              "rowid": "3",
+              "columnname": "Summary",
+              "extracteddata": "Provides additional insured status to property owners",
+              "confidencescore": 0.84,
+              "confidenceflag": "medium"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
