@@ -22,11 +22,6 @@ export default function StatsCards() {
           <div className="stat-value">{matches}</div>
           <div className="stat-label">
             Matches
-            {hasEnhancedData && enhancedStats.aiMatches > 0 && (
-              <span className="text-xs text-blue-600 block">
-                {enhancedStats.aiMatches} advanced
-              </span>
-            )}
           </div>
         </div>
       </div>
