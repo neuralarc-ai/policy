@@ -102,13 +102,13 @@ body {
 .header-inner {
     max-width: 1400px;
     margin: 0 auto;
-    text-align: center;
+    text-align: right;
 }
 
 .brand {
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-end;
     gap: var(--space-4);
     margin-bottom: var(--space-3);
 }
