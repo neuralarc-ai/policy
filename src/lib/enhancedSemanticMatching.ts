@@ -9,6 +9,18 @@ export interface EnhancedMatchResult {
   source: 'exact' | 'rule-based' | 'gemini' | 'fallback';
 }
 
+// Map rule-based confidence to enhanced confidence
+function mapConfidence(ruleBasedConfidence: 'exact' | 'synonym' | 'high' | 'ambiguous' | 'different'): 'exact' | 'high' | 'medium' | 'low' | 'ambiguous' {
+  switch (ruleBasedConfidence) {
+    case 'exact': return 'exact';
+    case 'synonym': return 'high';
+    case 'high': return 'high';
+    case 'ambiguous': return 'ambiguous';
+    case 'different': return 'low';
+    default: return 'low';
+  }
+}
+
 export class EnhancedSemanticMatcher {
   private geminiMatcher?: GeminiSemanticMatcher;
   private useGemini: boolean = false;
@@ -68,7 +80,7 @@ export class EnhancedSemanticMatcher {
     if (ruleBasedResult.match === true && ruleBasedResult.confidence === 'exact') {
       return { 
         match: ruleBasedResult.match, 
-        confidence: ruleBasedResult.confidence, 
+        confidence: mapConfidence(ruleBasedResult.confidence), 
         similarity: ruleBasedResult.similarity,
         source: 'rule-based' 
       };
@@ -78,7 +90,7 @@ export class EnhancedSemanticMatcher {
     if (ruleBasedResult.match === true && ruleBasedResult.confidence === 'synonym') {
       return { 
         match: ruleBasedResult.match, 
-        confidence: ruleBasedResult.confidence, 
+        confidence: 'high', // Map synonym to high confidence
         similarity: ruleBasedResult.similarity,
         source: 'rule-based' 
       };
@@ -103,7 +115,7 @@ export class EnhancedSemanticMatcher {
     // 5. Return rule-based result as final fallback
     return { 
       match: ruleBasedResult.match, 
-      confidence: ruleBasedResult.confidence, 
+      confidence: mapConfidence(ruleBasedResult.confidence), 
       similarity: ruleBasedResult.similarity,
       source: 'fallback' 
     };
@@ -122,7 +134,7 @@ export class EnhancedSemanticMatcher {
     const result = areValuesSemanticallyEqual(val1, val2);
     return { 
       match: result.match, 
-      confidence: result.confidence, 
+      confidence: mapConfidence(result.confidence), 
       similarity: result.similarity,
       source: 'rule-based' 
     };

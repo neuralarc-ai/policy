@@ -342,7 +342,7 @@ export function matchTableRowsByContext(
         columns: Object.fromEntries(
           Object.entries(row1).map(([key, value]) => [
             key,
-            { value: value || '', confidence: 1, flag: 'high' }
+            { value: String(value || ''), confidence: 1, flag: 'high' }
           ])
         )
       };
@@ -352,7 +352,7 @@ export function matchTableRowsByContext(
         columns: Object.fromEntries(
           Object.entries(bestMatch).map(([key, value]) => [
             key,
-            { value: value || '', confidence: 1, flag: 'high' }
+            { value: String(value || ''), confidence: 1, flag: 'high' }
           ])
         )
       };
@@ -375,7 +375,7 @@ export function matchTableRowsByContext(
         columns: Object.fromEntries(
           Object.entries(row1).map(([key, value]) => [
             key,
-            { value: value || '', confidence: 1, flag: 'high' }
+            { value: String(value || ''), confidence: 1, flag: 'high' }
           ])
         )
       };
@@ -402,7 +402,7 @@ export function matchTableRowsByContext(
         columns: Object.fromEntries(
           Object.entries(row2).map(([key, value]) => [
             key,
-            { value: value || '', confidence: 1, flag: 'high' }
+            { value: String(value || ''), confidence: 1, flag: 'high' }
           ])
         )
       };

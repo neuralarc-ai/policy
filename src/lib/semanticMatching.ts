@@ -1,6 +1,8 @@
 // ===================================
 // INSURANCE TERM SYNONYMS
 // ===================================
+import { SemanticMatchResult } from '@/types/document';
+
 export const INSURANCE_SYNONYMS: Record<string, string[]> = {
   // Coverage terms
   'coverage': ['covered', 'protection', 'insured'],
@@ -42,7 +44,7 @@ export function normalizeValue(value: string | null | undefined): string {
   return value.toString().trim().toLowerCase().replace(/\s+/g, ' ');
 }
 
-export function areValuesSemanticallyEqual(val1: string, val2: string) {
+export function areValuesSemanticallyEqual(val1: string, val2: string): SemanticMatchResult {
   const norm1 = normalizeValue(val1);
   const norm2 = normalizeValue(val2);
   
